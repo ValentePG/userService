@@ -18,7 +18,7 @@ public class UserDataUtil {
                 .lastName("Frigs").email("jorgedoe@gmail.com").build();
 
         var user3 = User.builder().id(3L).firstName("João")
-                .lastName("freixo").email("joãoodoe@gmail.com").build();
+                .lastName("Freixo").email("joãoodoe@gmail.com").build();
 
         LIST_USERS.add(user1);
         LIST_USERS.add(user2);
