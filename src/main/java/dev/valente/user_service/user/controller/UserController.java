@@ -49,7 +49,7 @@ public class UserController {
             return ResponseEntity.ok(userGetResponse);
         }
 
-        var userToMap = userService.findByNameOrThrowNotFound(firstName);
+        var userToMap = userService.findByFirstNameOrThrowNotFound(firstName);
 
         var userGetResponse = userMapperService.userToUserGetResponse(userToMap);
 
