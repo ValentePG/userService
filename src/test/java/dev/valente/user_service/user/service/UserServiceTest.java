@@ -224,8 +224,8 @@ class UserServiceTest {
                 .thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> userService.replace(newUser))
-                        .isInstanceOf(ResponseStatusException.class)
-                        .hasMessage("404 NOT_FOUND \"User not found\"");
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessage("404 NOT_FOUND \"User not found\"");
 
         Assertions.assertThat(newUser).hasNoNullFieldsOrProperties();
 
@@ -261,7 +261,6 @@ class UserServiceTest {
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToDelete.getId());
     }
-
 
 
     private void mockList() {

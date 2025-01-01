@@ -22,7 +22,7 @@ public class UserController {
     private final UserMapperService userMapperService;
 
     @GetMapping
-    public ResponseEntity<List<UserGetResponse>> findAll(){
+    public ResponseEntity<List<UserGetResponse>> findAll() {
 
         var response = userService.findAll().stream().map(userMapperService::userToUserGetResponse).toList();
 
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserGetResponse> findById(@PathVariable long id){
+    public ResponseEntity<UserGetResponse> findById(@PathVariable long id) {
 
         var userToMap = userService.findByIdOrThrowNotFound(id);
 
@@ -41,9 +41,9 @@ public class UserController {
 
     @GetMapping("find")
     public ResponseEntity<UserGetResponse> findWithParams(@RequestParam(required = false) String firstName
-                                                        , @RequestParam(required = false) String email){
+            , @RequestParam(required = false) String email) {
 
-        if(firstName == null){
+        if (firstName == null) {
             var userToMap = userService.findByEmailOrThrowNotFound(email);
             var userGetResponse = userMapperService.userToUserGetResponse(userToMap);
             return ResponseEntity.ok(userGetResponse);
@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest userPostRequest){
+    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest userPostRequest) {
 
         var userMapped = userMapperService.userPostRequestToUser(userPostRequest);
 
@@ -66,11 +66,11 @@ public class UserController {
         var UserPostResponse = userMapperService.userToUserPostResponse(userSaved);
 
         return ResponseEntity.status(201).body(UserPostResponse);
-        
+
     }
 
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody UserPutRequest userPutRequest){
+    public ResponseEntity<Void> replace(@RequestBody UserPutRequest userPutRequest) {
 
         var userToReplace = userMapperService.userPutRequestToUser(userPutRequest);
 
@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable long id){
+    public ResponseEntity<Void> deleteById(@PathVariable long id) {
 
         userService.delete(id);
 

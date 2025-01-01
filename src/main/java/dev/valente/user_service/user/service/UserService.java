@@ -17,20 +17,20 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    public User save(User user){
+    public User save(User user) {
         return userRepository.save(user);
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         var user = findByIdOrThrowNotFound(id);
         userRepository.delete(user);
     }
 
-    public void replace(User user){
+    public void replace(User user) {
         var oldUser = findByIdOrThrowNotFound(user.getId());
 
         findNullToReplace(oldUser, user);
@@ -38,32 +38,32 @@ public class UserService {
         userRepository.replace(oldUser, user);
     }
 
-    public User findByIdOrThrowNotFound(long id){
+    public User findByIdOrThrowNotFound(long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    public User findByFirstNameOrThrowNotFound(String name){
+    public User findByFirstNameOrThrowNotFound(String name) {
         return userRepository.findByFirstName(name)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    public User findByEmailOrThrowNotFound(String email){
+    public User findByEmailOrThrowNotFound(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    private void findNullToReplace(User oldUser, User user){
-        if(user.getEmail() == null){
+    private void findNullToReplace(User oldUser, User user) {
+        if (user.getEmail() == null) {
             user.setEmail(oldUser.getEmail());
             log.info("Usuário não pretende trocar o email");
         }
 
-        if(user.getFirstName() == null){
+        if (user.getFirstName() == null) {
             user.setFirstName(oldUser.getFirstName());
             log.info("Usuário não pretende trocar o primeiro nome");
         }
-        if(user.getLastName() == null){
+        if (user.getLastName() == null) {
             user.setLastName(oldUser.getLastName());
             log.info("Usuário não pretende trocar o ultimo nome");
         }

@@ -5,6 +5,7 @@ import dev.valente.user_service.user.common.UserDataUtil;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
 import dev.valente.user_service.user.repository.UserData;
 import dev.valente.user_service.user.service.UserMapperService;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
@@ -67,44 +68,46 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/users/{id} should return a user")
+    @DisplayName("GET v1/users/{existentId} should return a user")
     @Order(2)
     void findById_shouldReturnUser_whenSuccessfull() throws Exception {
         var pathResponse = "/userservice/get/get_findbyid_200.json";
 
-        var idFromExpectedUser = userDataUtil.getUserToFind().getId();
+        var existentId = userDataUtil.getUserToFind().getId();
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", idFromExpectedUser))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", existentId))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedUserFromFile));
     }
 
     @Test
-    @DisplayName("GET v1/users/{id} should return NOT FOUND")
+    @DisplayName("GET v1/users/{inexistentId} should return NOT FOUND")
     @Order(3)
     void findById_shouldReturnNotFound_whenFailed() throws Exception {
 
-        var id = 50L;
+        var inexistentId = 50L;
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", id))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", inexistentId))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("User not found"));
     }
 
     @Test
-    @DisplayName("GET v1/users/find?email=jonydoe@gmail.com should return a user")
+    @DisplayName("GET v1/users/find?email=existentEmail should return a user")
     @Order(4)
     void findWithParamsWithEmail_shouldReturnUser_whenSuccessfull() throws Exception {
         var pathResponse = "/userservice/get/get_findbyemail_200.json";
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
+        var existentEmail = userDataUtil.getUserToFind().getEmail();
+
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
-                        .param("email", "jonydoe@gmail.com"))
+                        .param("email", existentEmail))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedUserFromFile));
@@ -112,39 +115,46 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("GET v1/users/find?email=inexistent@gmail.com should return NOT FOUND")
+    @DisplayName("GET v1/users/find?email=inexistentEmail should return NOT FOUND")
     @Order(5)
     void findWithParamsWithNewEmail_shouldReturnNotFound_whenFailed() throws Exception {
 
+        var inexistentEmail = "inexistent@gmail.com";
+
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
-                        .param("email", "inexistent@gmail.com"))
+                        .param("email", inexistentEmail))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("User not found"));
     }
 
     @Test
-    @DisplayName("GET v1/users/find?firstName=Johny should return a user")
+    @DisplayName("GET v1/users/find?firstName=existentFirstName should return a user")
     @Order(6)
     void findWithParamsWithFirstName_shouldReturnUser_whenSuccessfull() throws Exception {
         var pathResponse = "/userservice/get/get_findbyfirstname_200.json";
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
+        var existentFirstName = userDataUtil.getUserToFind().getFirstName();
+
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
-                        .param("firstName", "Johny"))
+                        .param("firstName", existentFirstName))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedUserFromFile));
+
     }
 
     @Test
-    @DisplayName("GET v1/users/find?firstName=Inexistent should return NOT FOUND")
+    @DisplayName("GET v1/users/find?firstName=inexistentFirstName should return NOT FOUND")
     @Order(7)
     void findWithParamsWithFirstName_shouldReturnNotFound_whenFailed() throws Exception {
 
+        var inexistentFirstName = "Inexistent";
+
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
-                        .param("firstName", "Inexistent"))
+                        .param("firstName", inexistentFirstName))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("User not found"));
@@ -160,7 +170,7 @@ class UserControllerTest {
         var expectedUserSaved = userDataUtil.getUserToSave();
 
         BDDMockito.when(userMapperService
-                .userPostRequestToUser(ArgumentMatchers.any(UserPostRequest.class)))
+                        .userPostRequestToUser(ArgumentMatchers.any(UserPostRequest.class)))
                 .thenReturn(expectedUserSaved);
 
         var response = fileUtil.readFile(pathResponse);
@@ -177,7 +187,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("PUT v1/users should replace a user with new email")
+    @DisplayName("PUT v1/users payload with existentId should replace a user with new email")
     @Order(9)
     void replaceWithNewEmail_shouldReplaceUserWithNewEmail_whenSuccessfull() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithnewemail_200.json";
@@ -192,7 +202,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("PUT v1/users should replace a user with new firstName")
+    @DisplayName("PUT v1/users payload with existentId should replace a user with new firstName")
     @Order(10)
     void replaceWithNewFirstName_shouldReplaceUserWithNewFirstName_whenSuccessfull() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithnewfirstname_200.json";
@@ -207,7 +217,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("PUT v1/users should replace a user with new lastName")
+    @DisplayName("PUT v1/users payload with existentId should replace a user with new lastName")
     @Order(11)
     void replaceWithNewLastName_shouldReplaceUserWithNewLastName_whenSuccessfull() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithnewlastname_200.json";
@@ -223,7 +233,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("PUT v1/users should return NOT FOUND")
+    @DisplayName("PUT v1/users payload with inexistentId should return NOT FOUND")
     @Order(12)
     void replace_shouldReturnNotFound_whenFailed() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithinexistentid_404.json";
@@ -240,33 +250,33 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("DELETE v1/users/{id} should delete user")
+    @DisplayName("DELETE v1/users/{existentId} should delete user")
     @Order(13)
     void deleteById_shouldDeleteUser_whenSuccessfull() throws Exception {
 
-        var idFromexpectedToExclude = userDataUtil.getUserToDelete().getId();
+        var existentId = userDataUtil.getUserToDelete().getId();
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", idFromexpectedToExclude))
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", existentId))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
     }
 
     @Test
-    @DisplayName("DELETE v1/users/{id} should return NOT FOUND")
+    @DisplayName("DELETE v1/users/{inexistentId} should return NOT FOUND")
     @Order(14)
     void deleteById_shouldReturnNotFound_whenFailed() throws Exception {
 
-        var id = 50L;
+        var inexistentId = 50L;
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", id))
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", inexistentId))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.status().reason("User not found"));
 
     }
 
-    private void mockList(){
+    private void mockList() {
         BDDMockito.when(userData.getListUsers()).thenReturn(userDataUtil.getListUsers());
     }
 

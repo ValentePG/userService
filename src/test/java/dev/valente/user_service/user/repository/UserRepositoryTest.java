@@ -29,7 +29,7 @@ class UserRepositoryTest {
     @Test
     @Order(1)
     @DisplayName("Should return a list of all Users")
-    void findAll() {
+    void findAll_shouldReturnListOfAllUsers_whenSuccessfull() {
 
         var expectedListOfUsers = userRepository.findAll();
 
@@ -40,7 +40,7 @@ class UserRepositoryTest {
     @Test
     @Order(2)
     @DisplayName("Should return a User by given email")
-    void findByEmail() {
+    void findByEmail_shouldReturnUser_whenSuccessfull() {
 
         var expectedUser = userDataUtil.getUserToFind();
 

@@ -29,7 +29,7 @@ public class UserDataUtil {
         return LIST_USERS;
     }
 
-    public User getUserToSave(){
+    public User getUserToSave() {
         return User.builder()
                 .id(15L)
                 .email("geovane@gmail.com")
@@ -38,7 +38,7 @@ public class UserDataUtil {
                 .build();
     }
 
-    public User getUserToFind(){
+    public User getUserToFind() {
         return getFirst();
     }
 
@@ -77,7 +77,7 @@ public class UserDataUtil {
                 .build();
     }
 
-    private User getFirst(){
+    private User getFirst() {
         return getListUsers().getFirst();
     }
 }
