@@ -7,6 +7,9 @@ import dev.valente.user_service.user.repository.UserData;
 import dev.valente.user_service.user.service.UserMapperService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -20,6 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 @WebMvcTest(UserController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -186,9 +192,50 @@ class UserControllerTest {
 
     }
 
+    @ParameterizedTest
+    @MethodSource("postParameterizedTest")
+    @DisplayName("POST v1/users should return BAD REQUEST")
+    @Order(9)
+    void save_shouldReturnBadRequest_whenFailed(String fileName, List<String> Errors) throws Exception {
+
+        var request = fileUtil.readFile(fileName);
+
+        var resultMvc = mockMvc.perform(MockMvcRequestBuilders.post(URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(request))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+
+        var resolvedException = resultMvc.getResolvedException();
+
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage()).contains(Errors);
+
+    }
+
+    private static Stream<Arguments> postParameterizedTest() {
+
+        var emptyFirstName = "FirstName não deve estar vazio";
+        var emptyLastName = "LastName não deve estar vazio";
+        var emptyEmail = "Email não deve estar vazio";
+        var errorEmptyList = List.of(emptyFirstName, emptyLastName, emptyEmail);
+
+        var blankFirstName = "FirstName não pode estar em branco";
+        var blankLastName = "LastName não pode estar em branco";
+        var blankEmail = "Email não pode estar em branco";
+        var errorBlankList = List.of(blankFirstName, blankLastName, blankEmail);
+
+
+        return Stream.of(
+                Arguments.of("/userservice/post/post_createuser-empty-values_400.json", errorEmptyList),
+                Arguments.of("/userservice/post/post_createuser-blank-values_400.json", errorBlankList)
+        );
+    }
+
     @Test
     @DisplayName("PUT v1/users payload with existentId should replace a user with new email")
-    @Order(9)
+    @Order(10)
     void replaceWithNewEmail_shouldReplaceUserWithNewEmail_whenSuccessfull() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithnewemail_200.json";
 
@@ -203,7 +250,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("PUT v1/users payload with existentId should replace a user with new firstName")
-    @Order(10)
+    @Order(11)
     void replaceWithNewFirstName_shouldReplaceUserWithNewFirstName_whenSuccessfull() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithnewfirstname_200.json";
 
@@ -218,7 +265,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("PUT v1/users payload with existentId should replace a user with new lastName")
-    @Order(11)
+    @Order(12)
     void replaceWithNewLastName_shouldReplaceUserWithNewLastName_whenSuccessfull() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithnewlastname_200.json";
 
@@ -234,7 +281,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("PUT v1/users payload with inexistentId should return NOT FOUND")
-    @Order(12)
+    @Order(13)
     void replace_shouldReturnNotFound_whenFailed() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithinexistentid_404.json";
 
@@ -251,7 +298,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("DELETE v1/users/{existentId} should delete user")
-    @Order(13)
+    @Order(14)
     void deleteById_shouldDeleteUser_whenSuccessfull() throws Exception {
 
         var existentId = userDataUtil.getUserToDelete().getId();
@@ -264,7 +311,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("DELETE v1/users/{inexistentId} should return NOT FOUND")
-    @Order(14)
+    @Order(15)
     void deleteById_shouldReturnNotFound_whenFailed() throws Exception {
 
         var inexistentId = 50L;

@@ -6,6 +6,7 @@ import dev.valente.user_service.user.dto.httprequest.post.UserPostResponse;
 import dev.valente.user_service.user.dto.httprequest.put.UserPutRequest;
 import dev.valente.user_service.user.service.UserMapperService;
 import dev.valente.user_service.user.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserPostResponse> save(@RequestBody UserPostRequest userPostRequest) {
+    public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest userPostRequest) {
 
         var userMapped = userMapperService.userPostRequestToUser(userPostRequest);
 
