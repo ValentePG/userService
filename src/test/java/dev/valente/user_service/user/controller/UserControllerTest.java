@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.validation.Errors;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -233,13 +234,13 @@ class UserControllerTest {
         );
     }
 
-    @Test
-    @DisplayName("PUT v1/users payload with existentId should replace a user with new email")
+    @ParameterizedTest
+    @MethodSource("putParametrizedTest")
+    @DisplayName("PUT v1/users payload with existentId should replace a user with valid email, firstName and Lastname")
     @Order(10)
-    void replaceWithNewEmail_shouldReplaceUserWithNewEmail_whenSuccessfull() throws Exception {
-        var pathRequest = "/userservice/put/put_replacewithnewemail_200.json";
+    void replaceWithValidPayload_shouldReplaceUserWithValidPayload_whenSuccessfull(String fileName) throws Exception {
 
-        var request = fileUtil.readFile(pathRequest);
+        var request = fileUtil.readFile(fileName);
 
         mockMvc.perform(MockMvcRequestBuilders.put(URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -248,40 +249,58 @@ class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
-    @Test
-    @DisplayName("PUT v1/users payload with existentId should replace a user with new firstName")
+    private static Stream<Arguments> putParametrizedTest() {
+        var withNewEmail = "/userservice/put/put_replacewithnewemail_200.json";
+        var withNewFirstName = "/userservice/put/put_replacewithnewfirstname_200.json";
+        var withNewLastName = "/userservice/put/put_replacewithnewlastname_200.json";
+
+        return Stream.of(
+                Arguments.of(withNewEmail),
+                Arguments.of(withNewFirstName),
+                Arguments.of(withNewLastName)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("putWithInvalidFields")
+    @DisplayName("PUT v1/users payload should return BAD REQUEST with invalid fields")
     @Order(11)
-    void replaceWithNewFirstName_shouldReplaceUserWithNewFirstName_whenSuccessfull() throws Exception {
-        var pathRequest = "/userservice/put/put_replacewithnewfirstname_200.json";
+    void replaceWithInvalidPayload_shouldReturnBadRequest_whenFailed(String fileName, String error) throws Exception {
+        var request = fileUtil.readFile(fileName);
 
-        var request = fileUtil.readFile(pathRequest);
-
-        mockMvc.perform(MockMvcRequestBuilders.put(URL)
+        var resultMvc = mockMvc.perform(MockMvcRequestBuilders.put(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
+                .andExpect(MockMvcResultMatchers.status().isBadRequest()).andReturn();
+
+        var resolvedException = resultMvc.getResolvedException();
+
+        Assertions.assertThat(resolvedException).isNotNull();
+
+        Assertions.assertThat(resolvedException.getMessage()).contains(error);
     }
 
-    @Test
-    @DisplayName("PUT v1/users payload with existentId should replace a user with new lastName")
-    @Order(12)
-    void replaceWithNewLastName_shouldReplaceUserWithNewLastName_whenSuccessfull() throws Exception {
-        var pathRequest = "/userservice/put/put_replacewithnewlastname_200.json";
+    private static Stream<Arguments> putWithInvalidFields() {
+        var invalidEmail = "/userservice/put/put_replacewithinvalidemail_400.json";
+        var blankEmail = "/userservice/put/put_replacewithblank-empty-email_400.json";
+        var blankFirstName = "/userservice/put/put_replacewithblank-empty-firstname_400.json";
+        var blankLastName = "/userservice/put/put_replacewithblank-empty-lastname_400.json";
 
-        var request = fileUtil.readFile(pathRequest);
+        var invalidEmailError = "Email inválido";
+        var badRequestError = "Pelo menos um campo precisa estar preenchido corretamente";
 
-        mockMvc.perform(MockMvcRequestBuilders.put(URL)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(request))
-                .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isNoContent());
-
+        return Stream.of(
+                Arguments.of(invalidEmail,invalidEmailError),
+                Arguments.of(blankEmail, badRequestError),
+                Arguments.of(blankFirstName, badRequestError),
+                Arguments.of(blankLastName, badRequestError)
+        );
     }
 
     @Test
     @DisplayName("PUT v1/users payload with inexistentId should return NOT FOUND")
-    @Order(13)
+    @Order(12)
     void replace_shouldReturnNotFound_whenFailed() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithinexistentid_404.json";
 
@@ -298,7 +317,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("DELETE v1/users/{existentId} should delete user")
-    @Order(14)
+    @Order(13)
     void deleteById_shouldDeleteUser_whenSuccessfull() throws Exception {
 
         var existentId = userDataUtil.getUserToDelete().getId();
@@ -311,7 +330,7 @@ class UserControllerTest {
 
     @Test
     @DisplayName("DELETE v1/users/{inexistentId} should return NOT FOUND")
-    @Order(15)
+    @Order(14)
     void deleteById_shouldReturnNotFound_whenFailed() throws Exception {
 
         var inexistentId = 50L;

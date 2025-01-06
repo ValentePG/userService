@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody UserPutRequest userPutRequest) {
+    public ResponseEntity<Void> replace(@RequestBody @Valid UserPutRequest userPutRequest) {
 
         var userToReplace = userMapperService.userPutRequestToUser(userPutRequest);
 
