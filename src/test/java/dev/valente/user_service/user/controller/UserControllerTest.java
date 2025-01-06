@@ -95,12 +95,14 @@ class UserControllerTest {
     @Order(3)
     void findById_shouldReturnNotFound_whenFailed() throws Exception {
 
+        var response = fileUtil.readFile("/userservice/get/get_findbyid-inexistentid_404.json");
+
         var inexistentId = 50L;
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", inexistentId))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -126,13 +128,15 @@ class UserControllerTest {
     @Order(5)
     void findWithParamsWithNewEmail_shouldReturnNotFound_whenFailed() throws Exception {
 
+        var response = fileUtil.readFile("/userservice/get/get_findbyemail-inexistentemail_404.json");
+
         var inexistentEmail = "inexistent@gmail.com";
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
                         .param("email", inexistentEmail))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -158,13 +162,15 @@ class UserControllerTest {
     @Order(7)
     void findWithParamsWithFirstName_shouldReturnNotFound_whenFailed() throws Exception {
 
+        var response = fileUtil.readFile("/userservice/get/get_findbyfirstname-inexistfirstname_404.json");
+
         var inexistentFirstName = "Inexistent";
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
                         .param("firstName", inexistentFirstName))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
     }
 
     @Test
@@ -304,6 +310,10 @@ class UserControllerTest {
     void replace_shouldReturnNotFound_whenFailed() throws Exception {
         var pathRequest = "/userservice/put/put_replacewithinexistentid_404.json";
 
+        var pathResponse = "/userservice/put/put_replacenotfound_404.json";
+
+        var response = fileUtil.readFile(pathResponse);
+
         var request = fileUtil.readFile(pathRequest);
 
         mockMvc.perform(MockMvcRequestBuilders.put(URL)
@@ -311,7 +321,7 @@ class UserControllerTest {
                         .content(request))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
 
     }
 
@@ -333,12 +343,16 @@ class UserControllerTest {
     @Order(14)
     void deleteById_shouldReturnNotFound_whenFailed() throws Exception {
 
+        var pathResponse = "/userservice/delete/delete_idnotfound_404.json";
+
+        var response = fileUtil.readFile(pathResponse);
+
         var inexistentId = 50L;
 
         mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", inexistentId))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.status().reason("User not found"));
+                .andExpect(MockMvcResultMatchers.content().json(response));
 
     }
 

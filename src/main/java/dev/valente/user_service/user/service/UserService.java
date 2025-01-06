@@ -1,12 +1,11 @@
 package dev.valente.user_service.user.service;
 
+import dev.valente.user_service.exception.NotFoundException;
 import dev.valente.user_service.user.domain.User;
 import dev.valente.user_service.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -40,17 +39,17 @@ public class UserService {
 
     public User findByIdOrThrowNotFound(long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User findByFirstNameOrThrowNotFound(String name) {
         return userRepository.findByFirstName(name)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     public User findByEmailOrThrowNotFound(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     private void findNullToReplace(User oldUser, User user) {
