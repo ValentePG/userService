@@ -17,7 +17,6 @@ server:
     threads:
       max: 20
 
-
 logging:
   level:
     dev.valente.user_service: debug
