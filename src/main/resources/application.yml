@@ -10,6 +10,9 @@ spring:
     password: valente
   jpa:
     show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
   threads:
     virtual:
       enabled: true

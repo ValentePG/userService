@@ -2,6 +2,7 @@ package dev.valente.user_service.user.service;
 
 import dev.valente.user_service.user.common.UserDataUtil;
 import dev.valente.user_service.user.repository.UserRepository;
+import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +23,7 @@ class UserServiceTest {
     private UserService userService;
 
     @Mock
-    private UserRepository userRepository;
+    private UserRepositoryJPA userRepository;
 
     private final UserDataUtil userDataUtil = new UserDataUtil();
 
@@ -76,7 +77,7 @@ class UserServiceTest {
 
         var expectedUser = userDataUtil.getUserToFind();
 
-        BDDMockito.when(userRepository.findByFirstName(expectedUser.getFirstName())).thenReturn(Optional.of(expectedUser));
+        BDDMockito.when(userRepository.findUserByFirstName(expectedUser.getFirstName())).thenReturn(Optional.of(expectedUser));
 
         var returnedUser = userService.findByFirstNameOrThrowNotFound(expectedUser.getFirstName());
 
@@ -91,7 +92,7 @@ class UserServiceTest {
 
         var expectedUser = userDataUtil.getUserToFind();
 
-        BDDMockito.when(userRepository.findByFirstName(expectedUser.getFirstName())).thenReturn(Optional.empty());
+        BDDMockito.when(userRepository.findUserByFirstName(expectedUser.getFirstName())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> userService.findByFirstNameOrThrowNotFound(expectedUser.getFirstName()))
                 .isInstanceOf(ResponseStatusException.class)
@@ -104,7 +105,7 @@ class UserServiceTest {
     void findByEmailOrThrowNotFound_shouldReturnUser_whenSuccessfull() {
         var expectedUser = userDataUtil.getUserToFind();
 
-        BDDMockito.when(userRepository.findByEmail(expectedUser.getEmail())).thenReturn(Optional.of(expectedUser));
+        BDDMockito.when(userRepository.findUserByEmail(expectedUser.getEmail())).thenReturn(Optional.of(expectedUser));
 
         var returnedUser = userService.findByEmailOrThrowNotFound(expectedUser.getEmail());
 
@@ -119,7 +120,7 @@ class UserServiceTest {
 
         var expectedUser = userDataUtil.getUserToFind();
 
-        BDDMockito.when(userRepository.findByEmail(expectedUser.getEmail())).thenReturn(Optional.empty());
+        BDDMockito.when(userRepository.findUserByEmail(expectedUser.getEmail())).thenReturn(Optional.empty());
 
         Assertions.assertThatThrownBy(() -> userService.findByEmailOrThrowNotFound(expectedUser.getEmail()))
                 .isInstanceOf(ResponseStatusException.class)
@@ -152,14 +153,13 @@ class UserServiceTest {
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
 
-        BDDMockito.doNothing().when(userRepository).replace(expectedUserToReplace, newUser);
+        BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
 
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-        Assertions.assertThat(newUser).hasNoNullFieldsOrProperties();
 
-        Mockito.verify(userRepository, Mockito.times(1)).replace(expectedUserToReplace, newUser);
+        Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -175,14 +175,11 @@ class UserServiceTest {
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
 
-        BDDMockito.doNothing().when(userRepository).replace(expectedUserToReplace, newUser);
-
+        BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-        Assertions.assertThat(newUser).hasNoNullFieldsOrProperties();
-
-        Mockito.verify(userRepository, Mockito.times(1)).replace(expectedUserToReplace, newUser);
+        Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -198,15 +195,12 @@ class UserServiceTest {
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
 
-        BDDMockito.doNothing().when(userRepository).replace(expectedUserToReplace, newUser);
+        BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
 
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-        Assertions.assertThat(newUser).hasNoNullFieldsOrProperties();
-
-
-        Mockito.verify(userRepository, Mockito.times(1)).replace(expectedUserToReplace, newUser);
+        Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -227,9 +221,9 @@ class UserServiceTest {
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessage("404 NOT_FOUND \"User not found\"");
 
-        Assertions.assertThat(newUser).hasNoNullFieldsOrProperties();
 
-        Mockito.verify(userRepository, Mockito.times(0)).replace(expectedUserToReplace, newUser);
+
+        Mockito.verify(userRepository, Mockito.times(0)).save(expectedUserToReplace);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
     }
 

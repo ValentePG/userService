@@ -54,30 +54,29 @@ public class UserDataUtil {
         return User.builder()
                 .id(getFirst().getId())
                 .email("geovane321@gmail.com")
-                .firstName(getFirst().getFirstName())
-                .lastName(getFirst().getLastName())
                 .build();
     }
 
     public User getNewUserWithNewFirstName() {
         return User.builder()
                 .id(getFirst().getId())
-                .email(getFirst().getEmail())
                 .firstName("Gabriel")
-                .lastName(getFirst().getLastName())
                 .build();
     }
 
     public User getNewUserWithNewLastName() {
         return User.builder()
                 .id(getFirst().getId())
-                .email(getFirst().getEmail())
-                .firstName(getFirst().getFirstName())
                 .lastName("Valente")
                 .build();
     }
 
+    public User getThirdUser() {
+        return getListUsers().stream().filter(u -> u.getId() == 3).findFirst().orElse(null);
+    }
     private User getFirst() {
         return getListUsers().getFirst();
     }
+
+
 }

@@ -103,8 +103,7 @@ class UserRepositoryTest {
         userRepository.replace(oldUser, newUser);
 
         Assertions.assertThat(newUser)
-                .isIn(userDataUtil.getListUsers())
-                .hasNoNullFieldsOrProperties();
+                .isIn(userDataUtil.getListUsers());
 
         Assertions.assertThat(oldUser)
                 .isNotIn(userDataUtil.getListUsers());

@@ -4,6 +4,7 @@ import dev.valente.user_service.user.common.FileUtil;
 import dev.valente.user_service.user.common.UserDataUtil;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
 import dev.valente.user_service.user.repository.UserData;
+import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import dev.valente.user_service.user.service.UserMapperService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -26,6 +27,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.validation.Errors;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @WebMvcTest(UserController.class)
@@ -39,7 +41,7 @@ class UserControllerTest {
     private UserController userController;
 
     @MockBean
-    private UserData userData;
+    private UserRepositoryJPA userRepository;
 
     @SpyBean
     private UserMapperService userMapperService;
@@ -80,11 +82,13 @@ class UserControllerTest {
     void findById_shouldReturnUser_whenSuccessfull() throws Exception {
         var pathResponse = "/userservice/get/get_findbyid_200.json";
 
-        var existentId = userDataUtil.getUserToFind().getId();
+        var existentUser = userDataUtil.getUserToFind();
+
+        BDDMockito.when(userRepository.findById(existentUser.getId())).thenReturn(Optional.of(existentUser));
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", existentId))
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", existentUser.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedUserFromFile));
@@ -113,10 +117,12 @@ class UserControllerTest {
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
-        var existentEmail = userDataUtil.getUserToFind().getEmail();
+        var existentUser = userDataUtil.getUserToFind();
+
+        BDDMockito.when(userRepository.findUserByEmail(existentUser.getEmail())).thenReturn(Optional.of(existentUser));
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
-                        .param("email", existentEmail))
+                        .param("email", existentUser.getEmail()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedUserFromFile));
@@ -147,10 +153,14 @@ class UserControllerTest {
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
-        var existentFirstName = userDataUtil.getUserToFind().getFirstName();
+        var existentUser = userDataUtil.getUserToFind();
+
+        BDDMockito.when(userRepository.findUserByFirstName(existentUser.getFirstName()))
+                .thenReturn(Optional.of(existentUser));
+
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/find")
-                        .param("firstName", existentFirstName))
+                        .param("firstName", existentUser.getFirstName()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(expectedUserFromFile));
@@ -185,6 +195,9 @@ class UserControllerTest {
         BDDMockito.when(userMapperService
                         .userPostRequestToUser(ArgumentMatchers.any(UserPostRequest.class)))
                 .thenReturn(expectedUserSaved);
+
+        BDDMockito.when(userRepository.save(expectedUserSaved)).thenReturn(expectedUserSaved);
+
 
         var response = fileUtil.readFile(pathResponse);
 
@@ -223,11 +236,6 @@ class UserControllerTest {
 
     private static Stream<Arguments> postParameterizedTest() {
 
-        var emptyFirstName = "FirstName não deve estar vazio";
-        var emptyLastName = "LastName não deve estar vazio";
-        var emptyEmail = "Email não deve estar vazio";
-        var errorEmptyList = List.of(emptyFirstName, emptyLastName, emptyEmail);
-
         var blankFirstName = "FirstName não pode estar em branco";
         var blankLastName = "LastName não pode estar em branco";
         var blankEmail = "Email não pode estar em branco";
@@ -235,7 +243,7 @@ class UserControllerTest {
 
 
         return Stream.of(
-                Arguments.of("/userservice/post/post_createuser-empty-values_400.json", errorEmptyList),
+                Arguments.of("/userservice/post/post_createuser-empty-values_400.json", errorBlankList),
                 Arguments.of("/userservice/post/post_createuser-blank-values_400.json", errorBlankList)
         );
     }
@@ -247,6 +255,10 @@ class UserControllerTest {
     void replaceWithValidPayload_shouldReplaceUserWithValidPayload_whenSuccessfull(String fileName) throws Exception {
 
         var request = fileUtil.readFile(fileName);
+
+        var existentUser = userDataUtil.getThirdUser();
+
+        BDDMockito.when(userRepository.findById(existentUser.getId())).thenReturn(Optional.of(existentUser));
 
         mockMvc.perform(MockMvcRequestBuilders.put(URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -330,9 +342,12 @@ class UserControllerTest {
     @Order(13)
     void deleteById_shouldDeleteUser_whenSuccessfull() throws Exception {
 
-        var existentId = userDataUtil.getUserToDelete().getId();
+        var existentUser = userDataUtil.getUserToDelete();
 
-        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", existentId))
+        BDDMockito.when(userRepository.findById(existentUser.getId())).thenReturn(Optional.of(existentUser));
+        BDDMockito.doNothing().when(userRepository).delete(existentUser);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(URL + "/{id}", existentUser.getId()))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isNoContent());
 
@@ -357,7 +372,7 @@ class UserControllerTest {
     }
 
     private void mockList() {
-        BDDMockito.when(userData.getListUsers()).thenReturn(userDataUtil.getListUsers());
+        BDDMockito.when(userRepository.findAll()).thenReturn(userDataUtil.getListUsers());
     }
 
 
