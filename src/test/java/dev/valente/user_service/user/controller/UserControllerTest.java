@@ -3,7 +3,6 @@ package dev.valente.user_service.user.controller;
 import dev.valente.user_service.user.common.FileUtil;
 import dev.valente.user_service.user.common.UserDataUtil;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
-import dev.valente.user_service.user.repository.UserData;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import dev.valente.user_service.user.service.UserMapperService;
 import org.assertj.core.api.Assertions;
@@ -24,7 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.validation.Errors;
 
 import java.util.List;
 import java.util.Optional;

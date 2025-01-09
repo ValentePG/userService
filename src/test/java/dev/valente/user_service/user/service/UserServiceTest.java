@@ -1,11 +1,15 @@
 package dev.valente.user_service.user.service;
 
+import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.user.common.UserDataUtil;
-import dev.valente.user_service.user.repository.UserRepository;
+import dev.valente.user_service.user.domain.User;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -14,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -134,6 +139,8 @@ class UserServiceTest {
 
         var expectedUserToSave = userDataUtil.getUserToSave();
 
+        BDDMockito.when(userRepository.findUserByEmail(expectedUserToSave.getEmail()))
+                .thenReturn(Optional.empty());
         BDDMockito.when(userRepository.save(expectedUserToSave)).thenReturn(expectedUserToSave);
 
         var returnedUser = userService.save(expectedUserToSave);
@@ -144,6 +151,24 @@ class UserServiceTest {
 
     @Test
     @Order(9)
+    @DisplayName("Should return email already exists")
+    void save_shouldReturnEmailAlreadyExists_whenFailed() {
+
+        var expectedUserToSave = userDataUtil.getUserToSave();
+
+        BDDMockito.when(userRepository.findUserByEmail(expectedUserToSave.getEmail()))
+                .thenReturn(Optional.of(expectedUserToSave));
+
+        Assertions.assertThatThrownBy(() -> userService.save(expectedUserToSave))
+                .isInstanceOf(ResponseStatusException.class)
+                .hasMessage("400 BAD_REQUEST \"Email %s already exists\"".formatted(expectedUserToSave.getEmail()));
+    }
+
+
+    // 10, 11, 12 Devem ser trocados para um parameterized test
+
+    @Test
+    @Order(10)
     @DisplayName("Should replace user with new FirstName")
     void replace_shouldReplaceUserWithNewFirstName_whenSuccessfull() {
         var expectedUserToReplace = userDataUtil.getUserToReplace();
@@ -158,14 +183,13 @@ class UserServiceTest {
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-
         Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     @DisplayName("Should replace user with new Email")
     void replace_shouldReplaceUserWithNewEmail_whenSuccessfull() {
         var expectedUserToReplace = userDataUtil.getUserToReplace();
@@ -174,6 +198,9 @@ class UserServiceTest {
 
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
+
+        BDDMockito.when(userRepository.findUserByEmailAndIdNot(newUser.getEmail(),
+                newUser.getId())).thenReturn(Optional.empty());
 
         BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
         Assertions.assertThatNoException()
@@ -185,7 +212,32 @@ class UserServiceTest {
     }
 
     @Test
-    @Order(11)
+    @Order(12)
+    @DisplayName("Should return email already exists")
+    void replace_shouldReturnEmailAlreadyExists_whenFailed() {
+        var expectedUserToReplace = userDataUtil.getUserToReplace();
+
+        var newUser = userDataUtil.getNewUserWithNewEmail();
+
+        BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
+                .thenReturn(Optional.of(expectedUserToReplace));
+
+        BDDMockito.when(userRepository.findUserByEmailAndIdNot(newUser.getEmail(),
+                newUser.getId())).thenReturn(Optional.of(expectedUserToReplace));
+
+        Assertions.assertThatThrownBy(() -> userService.replace(newUser))
+                .isInstanceOf(EmailAlreadyExist.class)
+                .hasMessage("400 BAD_REQUEST \"Email %s already exists\""
+                        .formatted(expectedUserToReplace.getEmail()));
+
+        Mockito.verify(userRepository, Mockito.times(0)).save(expectedUserToReplace);
+        Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
+
+    }
+
+
+    @Test
+    @Order(12)
     @DisplayName("Should replace user with new LastName")
     void replace_shouldReplaceUserWithNewLastName_whenSuccessfull() {
         var expectedUserToReplace = userDataUtil.getUserToReplace();
@@ -205,8 +257,9 @@ class UserServiceTest {
 
     }
 
+
     @Test
-    @Order(12)
+    @Order(13)
     @DisplayName("Should return NOT FOUND")
     void replace_shouldThrowNotFound_whenFailed() {
 
@@ -228,7 +281,7 @@ class UserServiceTest {
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     @DisplayName("Should delete user by given id")
     void delete_shouldDeleteUser_whenSuccessfull() {
         var expectedUserToDelete = userDataUtil.getUserToDelete();
@@ -242,7 +295,7 @@ class UserServiceTest {
     }
 
     @Test
-    @Order(14)
+    @Order(15)
     @DisplayName("Should return NOT FOUND")
     void delete_shouldThrowNotFound_whenFailed() {
 
