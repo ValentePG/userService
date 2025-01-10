@@ -59,7 +59,7 @@ public class UserService {
     private void findNullToReplace(User oldUser, User user) {
         if (user.getEmail() != null) {
             assertEmailDoesNotExists(user.getEmail(), user.getId());
-            oldUser.setEmail(user.getEmail());
+            oldUser.                                                                              setEmail(user.getEmail());
             log.info("Usuário trocou de email");
         }
         if (user.getFirstName() != null) {

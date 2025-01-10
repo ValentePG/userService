@@ -31,7 +31,15 @@ public class UserDataUtil {
 
     public User getUserToSave() {
         return User.builder()
-                .id(15L)
+                .id(1L)
+                .email("geovane@gmail.com")
+                .firstName("Geovane")
+                .lastName("Valente")
+                .build();
+    }
+
+    public User getUserToSaveWithoutId() {
+        return User.builder()
                 .email("geovane@gmail.com")
                 .firstName("Geovane")
                 .lastName("Valente")
