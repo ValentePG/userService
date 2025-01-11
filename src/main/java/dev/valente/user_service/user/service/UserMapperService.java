@@ -1,6 +1,6 @@
 package dev.valente.user_service.user.service;
 
-import dev.valente.user_service.user.domain.User;
+import dev.valente.user_service.domain.User;
 import dev.valente.user_service.user.dto.httprequest.get.UserGetResponse;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostResponse;

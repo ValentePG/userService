@@ -1,7 +1,7 @@
 package dev.valente.user_service.user.controller;
 
-import dev.valente.user_service.user.common.FileUtil;
-import dev.valente.user_service.user.common.UserDataUtil;
+import dev.valente.user_service.common.FileUtil;
+import dev.valente.user_service.common.UserDataUtil;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import dev.valente.user_service.user.service.UserMapperService;
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 @WebMvcTest(UserController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ComponentScan("dev.valente.user_service")
+@ComponentScan(basePackages = {"dev.valente.user_service.user","dev.valente.user_service.common"})
 class UserControllerTest {
 
     private final String URL = "/v1/users";
@@ -63,7 +63,7 @@ class UserControllerTest {
     @Order(1)
     void findAll_shouldReturnListOfUsers_whenSuccessfull() throws Exception {
 
-        var pathResponse = "/userservice/get/get_findallusers_200.json";
+        var pathResponse = "/user/get/get_findallusers_200.json";
 
         var expectedList = fileUtil.readFile(pathResponse);
 
@@ -78,7 +78,7 @@ class UserControllerTest {
     @DisplayName("GET v1/users/{existentId} should return a user")
     @Order(2)
     void findById_shouldReturnUser_whenSuccessfull() throws Exception {
-        var pathResponse = "/userservice/get/get_findbyid_200.json";
+        var pathResponse = "/user/get/get_findbyid_200.json";
 
         var existentUser = userDataUtil.getUserToFind();
 
@@ -97,7 +97,7 @@ class UserControllerTest {
     @Order(3)
     void findById_shouldReturnNotFound_whenFailed() throws Exception {
 
-        var response = fileUtil.readFile("/userservice/get/get_findbyid-inexistentid_404.json");
+        var response = fileUtil.readFile("/user/get/get_findbyid-inexistentid_404.json");
 
         var inexistentId = 50L;
 
@@ -111,7 +111,7 @@ class UserControllerTest {
     @DisplayName("GET v1/users/find?email=existentEmail should return a user")
     @Order(4)
     void findWithParamsWithEmail_shouldReturnUser_whenSuccessfull() throws Exception {
-        var pathResponse = "/userservice/get/get_findbyemail_200.json";
+        var pathResponse = "/user/get/get_findbyemail_200.json";
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
@@ -132,7 +132,7 @@ class UserControllerTest {
     @Order(5)
     void findWithParamsWithNewEmail_shouldReturnNotFound_whenFailed() throws Exception {
 
-        var response = fileUtil.readFile("/userservice/get/get_findbyemail-inexistentemail_404.json");
+        var response = fileUtil.readFile("/user/get/get_findbyemail-inexistentemail_404.json");
 
         var inexistentEmail = "inexistent@gmail.com";
 
@@ -147,7 +147,7 @@ class UserControllerTest {
     @DisplayName("GET v1/users/find?firstName=existentFirstName should return a user")
     @Order(6)
     void findWithParamsWithFirstName_shouldReturnUser_whenSuccessfull() throws Exception {
-        var pathResponse = "/userservice/get/get_findbyfirstname_200.json";
+        var pathResponse = "/user/get/get_findbyfirstname_200.json";
 
         var expectedUserFromFile = fileUtil.readFile(pathResponse);
 
@@ -170,7 +170,7 @@ class UserControllerTest {
     @Order(7)
     void findWithParamsWithFirstName_shouldReturnNotFound_whenFailed() throws Exception {
 
-        var response = fileUtil.readFile("/userservice/get/get_findbyfirstname-inexistfirstname_404.json");
+        var response = fileUtil.readFile("/user/get/get_findbyfirstname-inexistfirstname_404.json");
 
         var inexistentFirstName = "Inexistent";
 
@@ -185,8 +185,8 @@ class UserControllerTest {
     @DisplayName("POST v1/users should save and return a user")
     @Order(8)
     void save_shouldSaveAndReturnUser_whenSuccessfull() throws Exception {
-        var pathResponse = "/userservice/post/post_createduser_201.json";
-        var pathRequest = "/userservice/post/post_createuser_200.json";
+        var pathResponse = "/user/post/post_createduser_201.json";
+        var pathRequest = "/user/post/post_createuser_200.json";
 
         var expectedUserSaved = userDataUtil.getUserToSave();
 
@@ -241,8 +241,8 @@ class UserControllerTest {
 
 
         return Stream.of(
-                Arguments.of("/userservice/post/post_createuser-empty-values_400.json", errorBlankList),
-                Arguments.of("/userservice/post/post_createuser-blank-values_400.json", errorBlankList)
+                Arguments.of("/user/post/post_createuser-empty-values_400.json", errorBlankList),
+                Arguments.of("/user/post/post_createuser-blank-values_400.json", errorBlankList)
         );
     }
 
@@ -266,9 +266,9 @@ class UserControllerTest {
     }
 
     private static Stream<Arguments> putParametrizedTest() {
-        var withNewEmail = "/userservice/put/put_replacewithnewemail_200.json";
-        var withNewFirstName = "/userservice/put/put_replacewithnewfirstname_200.json";
-        var withNewLastName = "/userservice/put/put_replacewithnewlastname_200.json";
+        var withNewEmail = "/user/put/put_replacewithnewemail_200.json";
+        var withNewFirstName = "/user/put/put_replacewithnewfirstname_200.json";
+        var withNewLastName = "/user/put/put_replacewithnewlastname_200.json";
 
         return Stream.of(
                 Arguments.of(withNewEmail),
@@ -298,10 +298,10 @@ class UserControllerTest {
     }
 
     private static Stream<Arguments> putWithInvalidFields() {
-        var invalidEmail = "/userservice/put/put_replacewithinvalidemail_400.json";
-        var blankEmail = "/userservice/put/put_replacewithblank-empty-email_400.json";
-        var blankFirstName = "/userservice/put/put_replacewithblank-empty-firstname_400.json";
-        var blankLastName = "/userservice/put/put_replacewithblank-empty-lastname_400.json";
+        var invalidEmail = "/user/put/put_replacewithinvalidemail_400.json";
+        var blankEmail = "/user/put/put_replacewithblank-empty-email_400.json";
+        var blankFirstName = "/user/put/put_replacewithblank-empty-firstname_400.json";
+        var blankLastName = "/user/put/put_replacewithblank-empty-lastname_400.json";
 
         var invalidEmailError = "Email inválido";
         var badRequestError = "Pelo menos um campo precisa estar preenchido corretamente";
@@ -318,9 +318,9 @@ class UserControllerTest {
     @DisplayName("PUT v1/users payload with inexistentId should return NOT FOUND")
     @Order(12)
     void replace_shouldReturnNotFound_whenFailed() throws Exception {
-        var pathRequest = "/userservice/put/put_replacewithinexistentid_404.json";
+        var pathRequest = "/user/put/put_replacewithinexistentid_404.json";
 
-        var pathResponse = "/userservice/put/put_replacenotfound_404.json";
+        var pathResponse = "/user/put/put_replacenotfound_404.json";
 
         var response = fileUtil.readFile(pathResponse);
 
@@ -356,7 +356,7 @@ class UserControllerTest {
     @Order(14)
     void deleteById_shouldReturnNotFound_whenFailed() throws Exception {
 
-        var pathResponse = "/userservice/delete/delete_idnotfound_404.json";
+        var pathResponse = "/user/delete/delete_idnotfound_404.json";
 
         var response = fileUtil.readFile(pathResponse);
 

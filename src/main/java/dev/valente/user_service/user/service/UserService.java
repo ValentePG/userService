@@ -2,13 +2,11 @@ package dev.valente.user_service.user.service;
 
 import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.exception.NotFoundException;
-import dev.valente.user_service.user.domain.User;
+import dev.valente.user_service.domain.User;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 

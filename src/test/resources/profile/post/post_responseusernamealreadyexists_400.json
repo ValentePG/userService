@@ -1,0 +1,4 @@
+{
+  "status": 400,
+  "message": "Profile with name kogu already exists!"
+}

@@ -1,15 +1,11 @@
 package dev.valente.user_service.user.service;
 
 import dev.valente.user_service.exception.EmailAlreadyExist;
-import dev.valente.user_service.user.common.UserDataUtil;
-import dev.valente.user_service.user.domain.User;
+import dev.valente.user_service.common.UserDataUtil;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -18,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)

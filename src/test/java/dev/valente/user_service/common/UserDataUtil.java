@@ -1,6 +1,6 @@
-package dev.valente.user_service.user.common;
+package dev.valente.user_service.common;
 
-import dev.valente.user_service.user.domain.User;
+import dev.valente.user_service.domain.User;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

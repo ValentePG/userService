@@ -1,4 +1,4 @@
-package dev.valente.user_service.user.domain;
+package dev.valente.user_service.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

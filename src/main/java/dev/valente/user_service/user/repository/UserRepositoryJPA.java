@@ -1,6 +1,6 @@
 package dev.valente.user_service.user.repository;
 
-import dev.valente.user_service.user.domain.User;
+import dev.valente.user_service.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package dev.valente.user_service.user.common;
+package dev.valente.user_service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
