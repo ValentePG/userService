@@ -16,12 +16,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +54,92 @@ class ProfileControllerTest {
     @Autowired
     private ProfileDataUtil profileDataUtil;
 
+    @Test
+    @DisplayName("GET v1/profiles/paginated should return page of Profiles")
+    @Order(3)
+    void findAllPaginated_shouldReturnPageOfProfiles() throws Exception {
+
+        var pageRequest = PageRequest.of(0, profileDataUtil.getListProfile().size());
+        var pageProfile = new PageImpl<>(profileDataUtil.getListProfile(), pageRequest, profileDataUtil.getListProfile().size());
+
+        var response = fileUtil.readFile("/profile/get/get_findallpaginated_200.json");
+
+
+        BDDMockito.when(profileRepository.findAll(pageRequest)).thenReturn(pageProfile);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/paginated")
+                    .param("page", "0")
+                    .param("size", String.valueOf(profileDataUtil.getListProfile().size())))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+
+
+    }
+
+    @Test
+    @DisplayName("GET v1/profiles should return a list of profile when satisfy parameter name")
+    @Order(4)
+    void findAll_shouldReturnListOfProfile_withParameter() throws Exception {
+        var response = fileUtil.readFile("/profile/get/get_findallparameterized_200.json");
+        var expectedUserToFind = profileDataUtil.getFirst();
+
+        BDDMockito.when(profileRepository.findAllByName(expectedUserToFind.getName()))
+                .thenReturn(Collections.singletonList(expectedUserToFind));
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL)
+                        .param("name", expectedUserToFind.getName()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("GET v1/profiles should return a list of all profiles without parameters")
+    @Order(5)
+    void findAll_shouldReturnListOfAllProfiles_withoutParameters() throws Exception {
+        mockList();
+        var response = fileUtil.readFile("/profile/get/get_findall_200.json");
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+    }
+
+    @Test
+    @DisplayName("GET v1/profiles/{id} should return NOT FOUND when profiles does not exists")
+    @Order(6)
+    void findById_shouldReturnNotFoundException_whenProfileDoesNotExists() throws Exception {
+        var expectedProfile = profileDataUtil.getFirst();
+
+        var response = fileUtil.readFile("/profile/get/get_findbyid-inexistentid_404.json");
+
+        BDDMockito.when(profileRepository.findById(expectedProfile.getId())).thenReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", expectedProfile.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+
+    }
+
+    @Test
+    @DisplayName("GET v1/profiles/{id} should return profile when exists")
+    @Order(7)
+    void findById_shouldReturnProfile_whenExists() throws Exception {
+        var expectedProfile = profileDataUtil.getFirst();
+
+        var response = fileUtil.readFile("/profile/get/get_findbyid_200.json");
+
+        BDDMockito.when(profileRepository.findById(expectedProfile.getId())).thenReturn(Optional.of(expectedProfile));
+
+        mockMvc.perform(MockMvcRequestBuilders.get(URL + "/{id}", expectedProfile.getId()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().json(response));
+
+    }
 
     @Test
     @DisplayName("POST v1/profiles should return userNameAlreadyExists")
@@ -59,7 +148,7 @@ class ProfileControllerTest {
         var existentProfile = profileDataUtil.getFirst();
 
         var request = fileUtil.readFile("/profile/post/post_requestusernamealreadyexists_400.json");
-        var response = fileUtil.readFile("/profile/post/post_responseusernamealreadyexists_400.json");
+        var response = fileUtil.readFile("/profile/post/post_responseusernamealreadyexistsexception_400.json");
 
         BDDMockito.when(profileRepository.findByName(existentProfile.getName())).thenReturn(Optional.of(existentProfile));
 

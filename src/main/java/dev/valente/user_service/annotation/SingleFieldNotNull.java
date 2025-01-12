@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = SingleFieldNotNullValidator.class)
 public @interface SingleFieldNotNull {
     String message() default "Apenas um campo pode ser não nulo.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

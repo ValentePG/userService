@@ -1,8 +1,8 @@
 package dev.valente.user_service.user.service;
 
+import dev.valente.user_service.domain.User;
 import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.exception.NotFoundException;
-import dev.valente.user_service.domain.User;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +57,7 @@ public class UserService {
     private void findNullToReplace(User oldUser, User user) {
         if (user.getEmail() != null) {
             assertEmailDoesNotExists(user.getEmail(), user.getId());
-            oldUser.                                                                              setEmail(user.getEmail());
+            oldUser.setEmail(user.getEmail());
             log.info("Usuário trocou de email");
         }
         if (user.getFirstName() != null) {

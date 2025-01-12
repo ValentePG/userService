@@ -23,7 +23,7 @@ public class ProfileService {
     }
 
     public List<Profile> findAll(String name) {
-        if(name != null){
+        if (name != null) {
             return profileRepository.findAllByName(name);
         }
         return profileRepository.findAll();
@@ -44,7 +44,7 @@ public class ProfileService {
 //    }
 
     private void assertNameDoesNotExist(String name) {
-         profileRepository.findByName(name).ifPresent(this::throwsUserNameAlreadyExists);
+        profileRepository.findByName(name).ifPresent(this::throwsUserNameAlreadyExists);
     }
 
     private void throwsUserNameAlreadyExists(Profile profile) {

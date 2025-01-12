@@ -8,5 +8,5 @@ public record UserPutRequest(long id,
                              String firstName,
                              String lastName,
                              @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-                             message = "Email inválido") String email) {
+                                     message = "Email inválido") String email) {
 }

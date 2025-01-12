@@ -25,7 +25,7 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @GetMapping
-    public ResponseEntity<List<ProfileGetResponse>> findall(@RequestParam(required = false) String name){
+    public ResponseEntity<List<ProfileGetResponse>> findall(@RequestParam(required = false) String name) {
 
         var response = profileService.findAll(name).stream().map(profileMapper::profileToProfileGetResponse).toList();
 
@@ -33,14 +33,14 @@ public class ProfileController {
     }
 
     @GetMapping("/paginated")
-    public ResponseEntity<Page<ProfileGetResponse>> findAllPaginated(Pageable pageable){
+    public ResponseEntity<Page<ProfileGetResponse>> findAllPaginated(Pageable pageable) {
         var response = profileService.findAllPaginated(pageable).map(profileMapper::profileToProfileGetResponse);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProfileGetResponse> findById(@PathVariable Long id){
+    public ResponseEntity<ProfileGetResponse> findById(@PathVariable Long id) {
 
         var profileToFind = profileService.findByIdOrThrowNotFound(id);
         var response = profileMapper.profileToProfileGetResponse(profileToFind);
@@ -49,7 +49,7 @@ public class ProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<ProfilePostResponse> createProfile(@RequestBody @Valid ProfilePostRequest profilePostRequest){
+    public ResponseEntity<ProfilePostResponse> createProfile(@RequestBody @Valid ProfilePostRequest profilePostRequest) {
 
         var profileToCreate = profileMapper.profilePostRequestToProfile(profilePostRequest);
         var profileCreated = profileService.createProfile(profileToCreate);

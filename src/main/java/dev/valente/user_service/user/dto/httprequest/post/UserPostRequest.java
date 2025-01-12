@@ -1,7 +1,6 @@
 package dev.valente.user_service.user.dto.httprequest.post;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 
 public record UserPostRequest(
         @NotBlank(message = "FirstName não pode estar em branco") String firstName,
