@@ -8,6 +8,9 @@ import dev.valente.user_service.profile.repository.ProfileRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,9 +27,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @WebMvcTest(controllers = ProfileController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -186,13 +191,13 @@ class ProfileControllerTest {
 
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("postParameterizedTest")
     @DisplayName("POST v1/profiles should return BAD REQUEST")
     @Order(10)
-    void createProfile_shouldReturnBadRequest_withInvalidData() throws Exception {
+    void createProfile_shouldReturnBadRequest_withInvalidData(String file, List<String> errors) throws Exception {
 
-        var request = fileUtil.readFile("/profile/post/post_createprofilewithinvaliddata_400.json");
-        var listOfErrors = List.of("O campo nome não pode estar vazio","O campo descrição não pode estar vazio");
+        var request = fileUtil.readFile(file);
 
         var mockMvcResult = mockMvc.perform(MockMvcRequestBuilders.post(URL)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -204,7 +209,23 @@ class ProfileControllerTest {
 
         Assertions.assertThat(resolvedException).isNotNull();
 
-        Assertions.assertThat(resolvedException.getMessage()).contains(listOfErrors);
+        Assertions.assertThat(resolvedException.getMessage()).contains(errors);
+    }
+
+    private static Stream<Arguments> postParameterizedTest() throws IOException {
+        var blankData = "/profile/post/post_createprofilewithdata-blank_400.json";
+        var emptyData = "/profile/post/post_createprofilewithdata-empty_400.json";
+        var nullData = "/profile/post/post_createprofilewithdata-null_400.json";
+
+        var nameError = "O campo nome não pode estar vazio";
+        var descriptionError = "O campo descrição não pode estar vazio";
+        var listOfErrors = List.of(nameError, descriptionError);
+
+        return Stream.of(
+                Arguments.of(blankData, listOfErrors),
+                Arguments.of(emptyData, listOfErrors),
+                Arguments.of(nullData, listOfErrors)
+        );
     }
 
     private void mockList(){

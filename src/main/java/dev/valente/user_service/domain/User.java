@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "usuario")
+@Table(name = "tbl_usuario")
 public class User {
 
     @Id

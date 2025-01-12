@@ -9,10 +9,10 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
-@Table(name = "profile")
+@Table(name = "tbl_profile")
 public class Profile {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
