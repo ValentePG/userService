@@ -37,6 +37,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<version>9.1.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.gavlyukovskiy</groupId>
+			<artifactId>datasource-proxy-spring-boot-starter</artifactId>
+			<version>1.10.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.mapstruct</groupId>

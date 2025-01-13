@@ -2,9 +2,7 @@ package dev.valente.user_service.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
-@Component
 @Getter
 @Setter
 @ToString
@@ -17,7 +15,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
     private String firstName;
@@ -27,4 +25,5 @@ public class User {
 
     @Column(unique = true)
     private String email;
+
 }
