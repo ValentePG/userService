@@ -1,14 +1,13 @@
 package dev.valente.user_service.userprofile.controller;
 
+import dev.valente.user_service.userprofile.dto.ProfilesGetResponse;
 import dev.valente.user_service.userprofile.dto.UserProfileGetResponse;
 import dev.valente.user_service.userprofile.mapper.UserProfileMapper;
 import dev.valente.user_service.userprofile.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,11 +24,20 @@ public class UserProfileController {
     public ResponseEntity<List<UserProfileGetResponse>> findAll() {
         log.debug("Request received to list all user profiles.");
 
-
         var userProfiles = userProfileService.findAll();
 
         var userProfileGetResponses = userProfileMapper.toUserProfileGetResponse(userProfiles);
 
         return ResponseEntity.ok(userProfileGetResponses);
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<List<ProfilesGetResponse>> findById(@PathVariable Long id) {
+
+        var userProfiles = userProfileService.findAllByProfileId(id);
+
+        var response = userProfileMapper.toProfilesGetResponse(userProfiles);
+
+        return ResponseEntity.ok(response);
     }
 }
