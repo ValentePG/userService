@@ -1,7 +1,7 @@
 package dev.valente.user_service.userprofile.controller;
 
-import dev.valente.user_service.userprofile.dto.ProfilesGetResponse;
 import dev.valente.user_service.userprofile.dto.UserProfileGetResponse;
+import dev.valente.user_service.userprofile.dto.UserProfileUserGetResponse;
 import dev.valente.user_service.userprofile.mapper.UserProfileMapper;
 import dev.valente.user_service.userprofile.service.UserProfileService;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +31,13 @@ public class UserProfileController {
         return ResponseEntity.ok(userProfileGetResponses);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<List<ProfilesGetResponse>> findById(@PathVariable Long id) {
+    @GetMapping("profiles/{id}/users")
+    public ResponseEntity<List<UserProfileUserGetResponse>> findById(@PathVariable Long id) {
+        log.debug("Request received to find user profile by id: {}", id);
 
-        var userProfiles = userProfileService.findAllByProfileId(id);
+        var users = userProfileService.findAllUserByProfileId(id);
 
-        var response = userProfileMapper.toProfilesGetResponse(userProfiles);
+        var response = userProfileMapper.toUserProfileUserGetResponse(users);
 
         return ResponseEntity.ok(response);
     }

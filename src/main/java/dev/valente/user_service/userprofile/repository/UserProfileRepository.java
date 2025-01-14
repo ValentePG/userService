@@ -1,5 +1,6 @@
 package dev.valente.user_service.userprofile.repository;
 
+import dev.valente.user_service.domain.User;
 import dev.valente.user_service.domain.UserProfile;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 
     @EntityGraph(value = "UserProfile.fullDetails")
     List<UserProfile> findAllByProfile_Id(Long id);
+
+    @Query("SELECT up.user FROM UserProfile up where up.profile.id = ?1")
+    List<User> findAllUsersByProfileId(Long id);
 }

@@ -14,7 +14,7 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Import(UserDataUtil.class)
-@Sql("/sql/init_sql_user")
+@Sql("/sql/init_sql_user.sql")
 class UserRepositoryJPATest {
 
     @Autowired
@@ -42,7 +42,7 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(2)
-//    @Sql("/sql/init_sql_user")
+//    @Sql("/sql/init_sql_user.sql")
     void findUserByFirstName_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
@@ -55,7 +55,7 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(3)
-//    @Sql("/sql/init_sql_user")
+//    @Sql("/sql/init_sql_user.sql")
     void findUserByEmail_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
@@ -68,7 +68,7 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(4)
-//    @Sql("/sql/init_sql_user")
+//    @Sql("/sql/init_sql_user.sql")
     void findUserByEmailAndIdNot_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
@@ -81,7 +81,7 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(5)
-//    @Sql("/sql/init_sql_user")
+//    @Sql("/sql/init_sql_user.sql")
     void findById_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
