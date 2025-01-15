@@ -1,6 +1,7 @@
 package dev.valente.user_service.user.repository;
 
 import dev.valente.user_service.common.UserDataUtil;
+import dev.valente.user_service.config.IntegrationTestConfig;
 import dev.valente.user_service.domain.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -14,8 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Import(UserDataUtil.class)
-@Sql("/sql/init_sql_user.sql")
-class UserRepositoryJPATest {
+class UserRepositoryJPATest extends IntegrationTestConfig {
 
     @Autowired
     private UserRepositoryJPA userRepository;
@@ -23,26 +23,24 @@ class UserRepositoryJPATest {
     @Autowired
     private UserDataUtil userDataUtil;
 
-//    @Autowired
-//    private TestEntityManager entityManager;
-
     @Test
     @DisplayName("save should save and return User")
     @Order(1)
-    void save_shouldSaveAndReturnUser_WhenSuccessfull(){
+    void save_shouldSaveAndReturnUser_WhenSuccessfull() {
         var user = User.builder().email("gabrieL@gomes.com").firstName("gabriel").lastName("gomes").build();
 
         var userSaved = userRepository.save(user);
 
-        Assertions.assertThat(userSaved).hasNoNullFieldsOrProperties()
-                .hasFieldOrPropertyWithValue("id", 2L);
+        Assertions.assertThat(userSaved).hasNoNullFieldsOrProperties();
+        Assertions.assertThat(userSaved.getId()).isEqualTo(user.getId());
 
     }
 
     @Test
     @DisplayName("should return user")
     @Order(2)
-//    @Sql("/sql/init_sql_user.sql")
+    @Sql(value = "/sql/init_sql_user.sql")
+    @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByFirstName_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
@@ -55,7 +53,8 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(3)
-//    @Sql("/sql/init_sql_user.sql")
+    @Sql(value = "/sql/init_sql_user.sql")
+    @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByEmail_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
@@ -68,7 +67,8 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(4)
-//    @Sql("/sql/init_sql_user.sql")
+    @Sql(value = "/sql/init_sql_user.sql")
+    @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByEmailAndIdNot_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
@@ -81,12 +81,12 @@ class UserRepositoryJPATest {
     @Test
     @DisplayName("should return user")
     @Order(5)
-//    @Sql("/sql/init_sql_user.sql")
+    @Sql(value = "/sql/init_sql_user.sql")
+    @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findById_shouldReturnUser_WhenSuccessfull() {
         var user = userDataUtil.getUserToSave();
 
         var usefind = userRepository.findUserByEmail(user.getEmail());
-        System.out.println(usefind.get().getId());
 
         var userToFind = userRepository.findById(usefind.get().getId());
 

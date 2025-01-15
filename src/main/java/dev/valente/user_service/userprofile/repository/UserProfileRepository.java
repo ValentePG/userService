@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
@@ -17,7 +16,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     List<UserProfile> retrieveAll();
     //N + 1
 
-//    @EntityGraph(attributePaths = {"user", "profile"})
+    //    @EntityGraph(attributePaths = {"user", "profile"})
     @EntityGraph(value = "UserProfile.fullDetails")
     List<UserProfile> findAll();
 

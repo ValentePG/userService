@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 @WebMvcTest(UserController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ComponentScan(basePackages = {"dev.valente.user_service.user","dev.valente.user_service.common"})
+@ComponentScan(basePackages = {"dev.valente.user_service.user", "dev.valente.user_service.common"})
 class UserControllerTest {
 
     private final String URL = "/v1/users";
@@ -307,7 +307,7 @@ class UserControllerTest {
         var badRequestError = "Pelo menos um campo precisa estar preenchido corretamente";
 
         return Stream.of(
-                Arguments.of(invalidEmail,invalidEmailError),
+                Arguments.of(invalidEmail, invalidEmailError),
                 Arguments.of(blankEmail, badRequestError),
                 Arguments.of(blankFirstName, badRequestError),
                 Arguments.of(blankLastName, badRequestError)

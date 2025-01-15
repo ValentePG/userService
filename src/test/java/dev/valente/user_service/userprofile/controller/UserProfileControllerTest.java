@@ -5,7 +5,8 @@ import dev.valente.user_service.common.UserProfileDataUtil;
 import dev.valente.user_service.userprofile.mapper.UserProfileMapper;
 import dev.valente.user_service.userprofile.repository.UserProfileRepository;
 import dev.valente.user_service.userprofile.service.UserProfileService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -46,7 +47,7 @@ class UserProfileControllerTest {
     @Autowired
     private UserProfileDataUtil userProfileDataUtil;
 
-    private void mockList(){
+    private void mockList() {
         BDDMockito.when(userProfileRepository.findAll()).thenReturn(userProfileDataUtil.getListUserProfile());
     }
 }

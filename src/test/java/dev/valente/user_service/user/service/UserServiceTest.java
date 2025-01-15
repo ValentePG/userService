@@ -1,7 +1,7 @@
 package dev.valente.user_service.user.service;
 
-import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.common.UserDataUtil;
+import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -268,7 +268,6 @@ class UserServiceTest {
         Assertions.assertThatThrownBy(() -> userService.replace(newUser))
                 .isInstanceOf(ResponseStatusException.class)
                 .hasMessage("404 NOT_FOUND \"User not found\"");
-
 
 
         Mockito.verify(userRepository, Mockito.times(0)).save(expectedUserToReplace);

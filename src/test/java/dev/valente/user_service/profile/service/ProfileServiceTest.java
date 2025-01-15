@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
-@ComponentScan(basePackages = {"dev.valente.user_service.profile","dev.valente.user_service.common"})
+@ComponentScan(basePackages = {"dev.valente.user_service.profile", "dev.valente.user_service.common"})
 class ProfileServiceTest {
 
     @InjectMocks
@@ -29,7 +29,7 @@ class ProfileServiceTest {
     @Mock
     private ProfileRepository profileRepository;
 
-    private ProfileDataUtil profileDataUtil = new ProfileDataUtil();
+    private final ProfileDataUtil profileDataUtil = new ProfileDataUtil();
 
     @Test
     @DisplayName("findAll with name null should return list of all profiles")
@@ -136,7 +136,7 @@ class ProfileServiceTest {
     }
 
 
-    private void mockList(){
+    private void mockList() {
         BDDMockito.when(profileRepository.findAll()).thenReturn(profileDataUtil.getListProfile());
     }
 }

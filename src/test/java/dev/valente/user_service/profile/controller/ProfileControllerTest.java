@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @WebMvcTest(controllers = ProfileController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
-@ComponentScan(basePackages = {"dev.valente.user_service.profile","dev.valente.user_service.common"})
+@ComponentScan(basePackages = {"dev.valente.user_service.profile", "dev.valente.user_service.common"})
 class ProfileControllerTest {
 
     private final String URL = "/v1/profiles";
@@ -61,7 +61,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("GET v1/profiles/paginated should return page of Profiles")
-    @Order(3)
+    @Order(1)
     void findAllPaginated_shouldReturnPageOfProfiles() throws Exception {
 
         var pageRequest = PageRequest.of(0, profileDataUtil.getListProfile().size());
@@ -73,8 +73,8 @@ class ProfileControllerTest {
         BDDMockito.when(profileRepository.findAll(pageRequest)).thenReturn(pageProfile);
 
         mockMvc.perform(MockMvcRequestBuilders.get(URL + "/paginated")
-                    .param("page", "0")
-                    .param("size", String.valueOf(profileDataUtil.getListProfile().size())))
+                        .param("page", "0")
+                        .param("size", String.valueOf(profileDataUtil.getListProfile().size())))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json(response));
@@ -84,7 +84,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("GET v1/profiles should return a list of profile when satisfy parameter name")
-    @Order(4)
+    @Order(2)
     void findAll_shouldReturnListOfProfile_withParameter() throws Exception {
         var response = fileUtil.readFile("/profile/get/get_findallparameterized_200.json");
         var expectedUserToFind = profileDataUtil.getFirst();
@@ -101,7 +101,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("GET v1/profiles should return a list of all profiles without parameters")
-    @Order(5)
+    @Order(3)
     void findAll_shouldReturnListOfAllProfiles_withoutParameters() throws Exception {
         mockList();
         var response = fileUtil.readFile("/profile/get/get_findall_200.json");
@@ -114,7 +114,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("GET v1/profiles/{id} should return NOT FOUND when profiles does not exists")
-    @Order(6)
+    @Order(4)
     void findById_shouldReturnNotFoundException_whenProfileDoesNotExists() throws Exception {
         var expectedProfile = profileDataUtil.getFirst();
 
@@ -131,7 +131,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("GET v1/profiles/{id} should return profile when exists")
-    @Order(7)
+    @Order(5)
     void findById_shouldReturnProfile_whenExists() throws Exception {
         var expectedProfile = profileDataUtil.getFirst();
 
@@ -148,7 +148,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("POST v1/profiles should return userNameAlreadyExists")
-    @Order(8)
+    @Order(6)
     void createProfile_shouldReturnNameAlreadyExists_whenNameAlreadyExists() throws Exception {
         var existentProfile = profileDataUtil.getFirst();
 
@@ -168,7 +168,7 @@ class ProfileControllerTest {
 
     @Test
     @DisplayName("POST v1/profiles should save user with valid data")
-    @Order(9)
+    @Order(7)
     void createProfile_shouldSaveUser_withValidData() throws Exception {
         var profileToSave = profileDataUtil.getUserToSave();
         var savedProfile = profileDataUtil.getUserAfterSave();
@@ -194,7 +194,7 @@ class ProfileControllerTest {
     @ParameterizedTest
     @MethodSource("postParameterizedTest")
     @DisplayName("POST v1/profiles should return BAD REQUEST")
-    @Order(10)
+    @Order(8)
     void createProfile_shouldReturnBadRequest_withInvalidData(String file, List<String> errors) throws Exception {
 
         var request = fileUtil.readFile(file);
@@ -228,7 +228,7 @@ class ProfileControllerTest {
         );
     }
 
-    private void mockList(){
+    private void mockList() {
         BDDMockito.when(profileRepository.findAll()).thenReturn(profileDataUtil.getListProfile());
     }
 }

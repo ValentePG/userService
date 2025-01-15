@@ -82,6 +82,7 @@ public class UserDataUtil {
     public User getThirdUser() {
         return getListUsers().stream().filter(u -> u.getId() == 3).findFirst().orElse(null);
     }
+
     private User getFirst() {
         return getListUsers().getFirst();
     }

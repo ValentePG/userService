@@ -1,7 +1,6 @@
 package dev.valente.user_service.common;
 
 import dev.valente.user_service.domain.Profile;
-import dev.valente.user_service.profile.mapper.ProfileMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -25,27 +24,27 @@ public class ProfileDataUtil {
         return LIST_PROFILE;
     }
 
-    public Profile getFirst(){
+    public Profile getFirst() {
         return LIST_PROFILE.getFirst();
     }
 
-    public Profile getSecond(){
+    public Profile getSecond() {
         return LIST_PROFILE.get(1);
     }
 
-    public Profile getLast(){
+    public Profile getLast() {
         return LIST_PROFILE.getLast();
     }
 
-    public Profile getUserToSave(){
+    public Profile getUserToSave() {
         return Profile.builder().name("sone").description("I am a new profile").build();
     }
 
-    public Profile getUserAfterSave(){
+    public Profile getUserAfterSave() {
         return Profile.builder().id(4L).name("sone").description("I am a new profile").build();
     }
 
-    public Profile getUserToDelete(){
+    public Profile getUserToDelete() {
         return getLast();
     }
 }

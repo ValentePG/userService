@@ -99,7 +99,7 @@ class UserProfileServiceTest {
     }
 
 
-    private void mockList(){
+    private void mockList() {
         BDDMockito.when(userProfileRepository.findAll()).thenReturn(userProfileDataUtil.getListUserProfile());
     }
 }
