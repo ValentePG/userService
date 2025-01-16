@@ -1,17 +1,1 @@
-[
-  {
-    "id": 1,
-    "name": "kogu",
-    "description": "I am badass"
-  },
-  {
-    "id": 2,
-    "name": "jone",
-    "description": "I am Intelligent"
-  },
-  {
-    "id": 3,
-    "name": "Fore",
-    "description": "I am the force"
-  }
-]
+[{"id":1,"name":"kogu","description":"I am badass"},{"id":2,"name":"jone","description":"I am Intelligent"},{"id":3,"name":"Fore","description":"I am the force"}]

@@ -7,3 +7,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
+#server:
+#  error:
+#    include-binding-errors: always

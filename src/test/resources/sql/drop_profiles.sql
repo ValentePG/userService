@@ -1,2 +1,1 @@
-DELETE
-FROM tbl_profile;
+DELETE FROM tbl_profile;

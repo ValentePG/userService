@@ -3,38 +3,30 @@ package dev.valente.user_service.profile.controller;
 import dev.valente.user_service.common.FileUtil;
 import dev.valente.user_service.common.ProfileDataUtil;
 import dev.valente.user_service.config.IntegrationTestConfig;
-import dev.valente.user_service.profile.dto.get.ProfileGetResponse;
-import dev.valente.user_service.profile.dto.post.ProfilePostResponse;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
+import net.javacrumbs.jsonunit.core.Option;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ProfileControllerIT extends IntegrationTestConfig {
-    private static final String URL = "/v1/profiles";
+public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+    private static final String URL = "/v1/profiles";
 
     @Autowired
     private ProfileDataUtil profileDataUtil;
@@ -42,39 +34,50 @@ class ProfileControllerIT extends IntegrationTestConfig {
     @Autowired
     private FileUtil fileUtil;
 
+    @LocalServerPort
+    private int port;
+
+    @BeforeEach
+    void setUrl() {
+        RestAssured.baseURI = "http://localhost";
+        RestAssured.port = port;
+    }
+
     @Test
     @DisplayName("GET v1/profiles returns a list with all profiles")
     @Order(1)
     @Sql(value = "/sql/init_two_profiles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "/sql/drop_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAll_ReturnsAllProfiles_WhenSuccessfull() {
-        var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {
-        };
-        var responseEntity = testRestTemplate.exchange(URL,
-                GET, null, typeReference);
+        var response = fileUtil.readFile("/profile/get/get_findall_200.json");
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotEmpty().doesNotContainNull();
+        RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .when()
+                .get(URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(Matchers.equalTo(response))
+                .log().all();
 
-        responseEntity
-                .getBody()
-                .forEach(p -> assertThat(p).hasNoNullFieldsOrProperties());
     }
 
     @Test
     @DisplayName("GET v1/profiles returns a list empty")
     @Order(2)
     void findAll_ReturnsEmptyList_WhenNothingIsFound() {
-        var typeReference = new ParameterizedTypeReference<List<ProfileGetResponse>>() {
-        };
 
-        var responseEntity = testRestTemplate.exchange(URL,
-                GET, null, typeReference);
+        var response = fileUtil.readFile("/profile/get/get_findall-empty_200.json");
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isNotNull().isEmpty();
+        RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .when()
+                .get(URL)
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body(Matchers.equalTo(response))
+                .log().all();
+
 
     }
 
@@ -83,15 +86,27 @@ class ProfileControllerIT extends IntegrationTestConfig {
     @Order(3)
     void createProfile_shouldSaveUser_WhenSuccessfull() throws IOException {
         var request = fileUtil.readFile("/profile/post/post_createprofilewithvaliddata_200.json");
+        var expectedResponse = fileUtil.readFile("/profile/post/post_createdprofile_201.json");
 
-        var profileEntity = buildHttpEntity(request);
+        var response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(URL)
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .log().all()
+                .extract().response().body().asString();
 
-        var responseEntity = testRestTemplate.exchange(URL,
-                POST, profileEntity, ProfilePostResponse.class);
+        JsonAssertions.assertThatJson(response)
+                .node("id")
+                .asNumber()
+                .isPositive();
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        assertThat(responseEntity.getBody()).isNotNull().hasNoNullFieldsOrProperties();
+        JsonAssertions.assertThatJson(response)
+                .whenIgnoringPaths("id")
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(expectedResponse);
     }
 
     @ParameterizedTest
@@ -102,15 +117,19 @@ class ProfileControllerIT extends IntegrationTestConfig {
         var request = fileUtil.readFile(requestFile);
         var expectedResponse = fileUtil.readFile(responseFile);
 
-        var profileEntity = buildHttpEntity(request);
-        var responseEntity = testRestTemplate.exchange(URL, POST, profileEntity, String.class);
 
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-
+        var response = RestAssured.given()
+                .contentType(ContentType.JSON).accept(ContentType.JSON)
+                .body(request)
+                .when()
+                .post(URL)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .log().all()
+                .extract().response().body().asString();
 
         // Importante
-        JsonAssertions.assertThatJson(responseEntity.getBody())
+        JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
                 .isEqualTo(expectedResponse);
 
@@ -133,9 +152,5 @@ class ProfileControllerIT extends IntegrationTestConfig {
         );
     }
 
-    private static HttpEntity<String> buildHttpEntity(String request) {
-        var httpHeaders = new HttpHeaders();
-        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        return new HttpEntity<>(request, httpHeaders);
-    }
+
 }

@@ -1,2 +1,1 @@
-DELETE
-FROM tbl_usuario;
+DELETE FROM tbl_usuario;
