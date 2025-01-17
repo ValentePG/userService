@@ -1,5 +1,6 @@
 package dev.valente.user_service.user.controller;
 
+import dev.valente.user_service.exception.ApiError;
 import dev.valente.user_service.exception.DefaultMessage;
 import dev.valente.user_service.user.dto.httprequest.get.UserGetResponse;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
@@ -95,9 +96,13 @@ public class UserController {
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                                     schema = @Schema(implementation = UserPostResponse.class))),
                     @ApiResponse(description = "Email already exists",
+                            responseCode = "4.0.0",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = DefaultMessage.class))),
+                    @ApiResponse(description = "Bad request invalid data",
                             responseCode = "400",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = DefaultMessage.class)))
+                                    schema = @Schema(implementation = ApiError.class)))
             })
     public ResponseEntity<UserPostResponse> save(@RequestBody @Valid UserPostRequest userPostRequest) {
 

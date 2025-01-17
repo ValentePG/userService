@@ -22,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 @ComponentScan(basePackages = {"dev.valente.user_service.user", "dev.valente.user_service.common"})
@@ -303,9 +304,7 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
 
         JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
-                .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(responseFile);
-
 
     }
 
@@ -375,7 +374,6 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
 
         JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
-                .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(responseFile);
 
     }
