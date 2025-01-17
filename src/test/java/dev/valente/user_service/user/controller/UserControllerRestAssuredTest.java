@@ -285,10 +285,10 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
     @MethodSource("postParameterizedTest")
     @DisplayName("POST v1/users should return BAD REQUEST")
     @Order(10)
-    void save_shouldReturnBadRequest_whenFailed(String fileName) {
+    void save_shouldReturnBadRequest_whenFailed(String fileName, String fileError) {
 
         var request = fileUtil.readFile(fileName);
-        var responseFile = fileUtil.readFile("/user/post/post_createuser-badrequest_400.json");
+        var responseFile = fileUtil.readFile(fileError);
 
         var response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -303,6 +303,7 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
 
         JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(responseFile);
 
 
@@ -310,9 +311,12 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
 
     private static Stream<Arguments> postParameterizedTest() {
 
+
         return Stream.of(
-                Arguments.of("/user/post/post_createuser-empty-values_400.json"),
-                Arguments.of("/user/post/post_createuser-blank-values_400.json")
+                Arguments.of("/user/post/post_createuser-empty-values_400.json",
+                        "/user/post/post_response-empty_400.json"),
+                Arguments.of("/user/post/post_createuser-blank-values_400.json",
+                        "/user/post/post_response-blank_400.json")
         );
     }
 
@@ -354,10 +358,10 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
     @MethodSource("putWithInvalidFields")
     @DisplayName("PUT v1/users payload should return BAD REQUEST with invalid fields")
     @Order(12)
-    void replaceWithInvalidPayload_shouldReturnBadRequest_whenFailed(String fileName) {
+    void replaceWithInvalidPayload_shouldReturnBadRequest_whenFailed(String fileName, String fileError) {
         var request = fileUtil.readFile(fileName);
 
-        var responseFile = fileUtil.readFile("/user/put/put_replacebadrequest_400.json");
+        var responseFile = fileUtil.readFile(fileError);
 
         var response = RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)
@@ -371,6 +375,7 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
 
         JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(responseFile);
 
     }
@@ -381,11 +386,16 @@ public class UserControllerRestAssuredTest extends IntegrationTestConfig {
         var blankFirstName = "/user/put/put_replacewithblank-empty-firstname_400.json";
         var blankLastName = "/user/put/put_replacewithblank-empty-lastname_400.json";
 
+        var invalidEmailError = "/user/put/put_response-replacewithinvalidemail_400.json";
+        var blankEmailError = "/user/put/put_response-replace-empty-email_400.json";
+        var blankFirstNameError = "/user/put/put_response-replace-empty-firstname_400.json";
+        var blankLastNameError = "/user/put/put_response-replace-empty-lastname_400.json";
+
         return Stream.of(
-                Arguments.of(invalidEmail),
-                Arguments.of(blankEmail),
-                Arguments.of(blankFirstName),
-                Arguments.of(blankLastName)
+                Arguments.of(invalidEmail, invalidEmailError),
+                Arguments.of(blankEmail, blankEmailError),
+                Arguments.of(blankFirstName, blankFirstNameError),
+                Arguments.of(blankLastName, blankLastNameError)
         );
     }
 

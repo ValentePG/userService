@@ -131,6 +131,7 @@ public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
         // Importante
         JsonAssertions.assertThatJson(response)
                 .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
 
 

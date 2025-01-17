@@ -6,6 +6,7 @@ import dev.valente.user_service.config.IntegrationTestConfig;
 import dev.valente.user_service.profile.dto.get.ProfileGetResponse;
 import dev.valente.user_service.profile.dto.post.ProfilePostResponse;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
+import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -112,6 +113,7 @@ class ProfileControllerIT extends IntegrationTestConfig {
         // Importante
         JsonAssertions.assertThatJson(responseEntity.getBody())
                 .whenIgnoringPaths("timestamp")
+                .when(Option.IGNORING_ARRAY_ORDER)
                 .isEqualTo(expectedResponse);
 
 

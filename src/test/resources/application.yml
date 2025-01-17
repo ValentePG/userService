@@ -9,4 +9,9 @@ spring:
       ddl-auto: none
 #server:
 #  error:
+server:
+  error:
+    include-binding-errors: always
+    include-message: always
+    include-stacktrace: on_param
 #    include-binding-errors: always
