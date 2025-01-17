@@ -20,8 +20,8 @@ spring:
 server:
   error:
     include-stacktrace: on_param
-  servlet:
-    context-path: /
+#  servlet:
+#    context-path: /
   tomcat:
     threads:
       max: 20
@@ -31,4 +31,3 @@ logging:
     dev.valente.user_service: debug
     #    org.hibernate.orm.jdbc.bind: trace
     net.ttddyy.dsproxy.listener: debug
-
