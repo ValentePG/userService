@@ -5,6 +5,7 @@ import dev.valente.user_service.profile.dto.post.ProfilePostRequest;
 import dev.valente.user_service.profile.dto.post.ProfilePostResponse;
 import dev.valente.user_service.profile.mapper.ProfileMapper;
 import dev.valente.user_service.profile.service.ProfileService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("v1/profiles")
+@SecurityRequirement(name = "basicAuth")
 public class ProfileController {
 
     private final ProfileMapper profileMapper;

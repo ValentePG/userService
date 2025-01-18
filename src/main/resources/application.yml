@@ -28,6 +28,7 @@ server:
 
 logging:
   level:
-    dev.valente.user_service: debug
+#    dev.valente.user_service: debug
     #    org.hibernate.orm.jdbc.bind: trace
-    net.ttddyy.dsproxy.listener: debug
+#    net.ttddyy.dsproxy.listener: debug
+    org.springframework.security: debug

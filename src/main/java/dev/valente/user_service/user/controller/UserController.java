@@ -11,17 +11,16 @@ import dev.valente.user_service.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,18 +28,20 @@ import java.util.List;
 @RequestMapping("v1/users")
 @RequiredArgsConstructor
 @Tag(name = "User API", description = "User related endpoints")
+@SecurityRequirement(name = "basicAuth")
 public class UserController {
     private final UserService userService;
     private final UserMapperService userMapperService;
 
     @GetMapping
     @Operation(summary = "Get all users", description = "Get all users available in the system",
-    responses = {
-            @ApiResponse(description = "List all users",
-            responseCode = "200",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    array = @ArraySchema(schema = @Schema(implementation = UserGetResponse.class))))
-    })
+            responses = {
+                    @ApiResponse(description = "List all users",
+                            responseCode = "200",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    array = @ArraySchema(schema = @Schema(implementation = UserGetResponse.class))))
+            })
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserGetResponse>> findAll() {
 
         var response = userService.findAll().stream().map(userMapperService::userToUserGetResponse).toList();
@@ -88,8 +89,8 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Save user",
-            requestBody =  @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create User", required = true,
-                content = @Content(schema = @Schema(implementation = UserPostRequest.class))),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Create User", required = true,
+                    content = @Content(schema = @Schema(implementation = UserPostRequest.class))),
             responses = {
                     @ApiResponse(description = "Create user in the system",
                             responseCode = "201",
