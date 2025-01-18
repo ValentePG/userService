@@ -22,13 +22,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 @ComponentScan(basePackages = {"dev.valente.user_service.user", "dev.valente.user_service.common"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserControllerRestAssuredTest extends IntegrationTestConfig {
+public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
 
     private final String URL = "/v1/users";
 
