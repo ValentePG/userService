@@ -3,6 +3,7 @@ package dev.valente.user_service.user.service;
 import dev.valente.user_service.domain.User;
 import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.exception.NotFoundException;
+import dev.valente.user_service.user.mapper.UserMapper;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.List;
 public class UserService {
 
     private final UserRepositoryJPA userRepository;
+    private final UserMapper userMapper;
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -31,12 +33,12 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public void replace(User user) {
-        var oldUser = assertUserExists(user.getId());
+    public void replace(User userToUpdate) {
+        var userSaved = assertUserExists(userToUpdate.getId());
 
-        findNullToReplace(oldUser, user);
+        findNullToReplace(userSaved, userToUpdate);
 
-        userRepository.save(oldUser);
+        userRepository.save(userToUpdate);
     }
 
     public User findByIdOrThrowNotFound(long id) {
@@ -54,20 +56,13 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
-    private void findNullToReplace(User oldUser, User user) {
-        if (user.getEmail() != null) {
-            assertEmailDoesNotExists(user.getEmail(), user.getId());
-            oldUser.setEmail(user.getEmail());
-            log.info("Usuário trocou de email");
-        }
-        if (user.getFirstName() != null) {
-            oldUser.setFirstName(user.getFirstName());
-            log.info("Usuário trocou o primeiro nome");
-        }
-        if (user.getLastName() != null) {
-            oldUser.setLastName(user.getLastName());
-            log.info("Usuário trocou o ultimo nome");
-        }
+    private void findNullToReplace(User userSaved, User userToUpdate) {
+        if (userToUpdate.getEmail() != null) assertEmailDoesNotExists(userToUpdate.getEmail(), userToUpdate.getId());
+        if (userToUpdate.getPassword() == null) userToUpdate.setPassword(userSaved.getPassword());
+        if (userToUpdate.getFirstName() == null) userToUpdate.setFirstName(userSaved.getFirstName());
+        if (userToUpdate.getLastName() == null) userToUpdate.setLastName(userSaved.getLastName());
+        if (userToUpdate.getEmail() == null) userToUpdate.setEmail(userSaved.getEmail());
+        userToUpdate.setRoles(userSaved.getRoles());
     }
 
     private User assertUserExists(Long id) {
