@@ -17,7 +17,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepositoryJPA userRepository;
-    private final UserMapper userMapper;
 
     public List<User> findAll() {
         return userRepository.findAll();

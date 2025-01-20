@@ -1,10 +1,11 @@
 package dev.valente.user_service.profile.controller;
 
 import dev.valente.user_service.common.FileUtil;
-import dev.valente.user_service.common.ProfileDataUtil;
 import dev.valente.user_service.config.IntegrationTestConfig;
+import dev.valente.user_service.config.RestAssuredConfig;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.hamcrest.Matchers;
@@ -13,34 +14,35 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlMergeMode;
 
 import java.io.IOException;
 import java.util.stream.Stream;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RestAssuredConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Sql(value = "/sql/init_one_login_regular_user.sql")
+@Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
 
     private static final String URL = "/v1/profiles";
 
     @Autowired
-    private ProfileDataUtil profileDataUtil;
-
-    @Autowired
     private FileUtil fileUtil;
 
-    @LocalServerPort
-    private int port;
+    @Autowired
+    @Qualifier(value = "requestSpecificationRegularUser")
+    private RequestSpecification requestSpecificationRegularUser;
 
     @BeforeEach
     void setUrl() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
+        RestAssured.requestSpecification = requestSpecificationRegularUser;
     }
 
     @Test
@@ -50,6 +52,7 @@ public class ProfileControllerRestAssuredIT extends IntegrationTestConfig {
     @Sql(value = "/sql/drop_profiles.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findAll_ReturnsAllProfiles_WhenSuccessfull() {
         var response = fileUtil.readFile("/profile/get/get_findall_200.json");
+
 
         RestAssured.given()
                 .contentType(ContentType.JSON).accept(ContentType.JSON)

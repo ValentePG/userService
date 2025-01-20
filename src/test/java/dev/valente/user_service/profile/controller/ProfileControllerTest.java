@@ -22,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -36,7 +37,8 @@ import java.util.stream.Stream;
 @WebMvcTest(controllers = ProfileController.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(MockitoExtension.class)
-@ComponentScan(basePackages = {"dev.valente.user_service.profile", "dev.valente.user_service.common"})
+@ComponentScan(basePackages = {"dev.valente.user_service.profile", "dev.valente.user_service.common", "dev.valente.user_service.config"})
+@WithMockUser
 class ProfileControllerTest {
 
     private final String URL = "/v1/profiles";

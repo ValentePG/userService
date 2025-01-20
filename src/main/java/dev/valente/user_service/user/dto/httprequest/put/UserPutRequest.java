@@ -2,6 +2,8 @@ package dev.valente.user_service.user.dto.httprequest.put;
 
 import dev.valente.user_service.annotation.SingleFieldNotNull;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 //@SingleFieldNotNull(message = "Pelo menos um campo precisa estar preenchido corretamente")
 public record UserPutRequest(long id,

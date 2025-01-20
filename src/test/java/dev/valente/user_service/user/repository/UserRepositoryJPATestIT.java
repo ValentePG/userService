@@ -27,7 +27,10 @@ class UserRepositoryJPATestIT extends IntegrationTestConfig {
     @DisplayName("save should save and return User")
     @Order(1)
     void save_shouldSaveAndReturnUser_WhenSuccessfull() {
-        var user = User.builder().email("gabrieL@gomes.com").firstName("gabriel").lastName("gomes").build();
+        var user = User.builder().email("gabrieL@gomes.com").firstName("gabriel").lastName("gomes")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
+                .build();
 
         var userSaved = userRepository.save(user);
 

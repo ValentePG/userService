@@ -65,6 +65,8 @@ CREATE TABLE `tbl_usuario`
     `email`      varchar(255) DEFAULT NULL,
     `first_name` varchar(255) NOT NULL,
     `last_name`  varchar(255) NOT NULL,
+    `roles` varchar(255) NOT NULL,
+    `password`  varchar(255) NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `UKdnvgup8yi2egdo5j5ekna9272` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

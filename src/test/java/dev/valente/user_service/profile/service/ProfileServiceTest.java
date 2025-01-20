@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 
 import java.util.Collections;
 import java.util.Optional;

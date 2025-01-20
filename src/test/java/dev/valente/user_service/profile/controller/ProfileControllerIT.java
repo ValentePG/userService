@@ -3,10 +3,10 @@ package dev.valente.user_service.profile.controller;
 import dev.valente.user_service.common.FileUtil;
 import dev.valente.user_service.common.ProfileDataUtil;
 import dev.valente.user_service.config.IntegrationTestConfig;
+import dev.valente.user_service.config.TestRestTemplateConfig;
 import dev.valente.user_service.profile.dto.get.ProfileGetResponse;
 import dev.valente.user_service.profile.dto.post.ProfilePostResponse;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
-import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -20,6 +20,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlMergeMode;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,8 +30,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestRestTemplateConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Sql(value = "/sql/init_one_login_regular_user.sql")
+@Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 class ProfileControllerIT extends IntegrationTestConfig {
     private static final String URL = "/v1/profiles";
 

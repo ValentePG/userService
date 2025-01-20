@@ -11,14 +11,32 @@ public class UserDataUtil {
     private final List<User> LIST_USERS = new ArrayList<>();
 
     {
-        var user1 = User.builder().id(1L).firstName("Johny")
-                .lastName("Juscelino").email("jonydoe@gmail.com").build();
+        var user1 = User.builder()
+                .id(1L)
+                .firstName("Johny")
+                .lastName("Juscelino")
+                .email("jonydoe@gmail.com")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
+                .build();
 
-        var user2 = User.builder().id(2L).firstName("Jorge")
-                .lastName("Frigs").email("jorgedoe@gmail.com").build();
+        var user2 = User.builder()
+                .id(2L)
+                .firstName("Jorge")
+                .lastName("Frigs")
+                .email("jorgedoe@gmail.com")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
+                .build();
 
-        var user3 = User.builder().id(3L).firstName("João")
-                .lastName("Freixo").email("joãoodoe@gmail.com").build();
+        var user3 = User.builder()
+                .id(3L)
+                .firstName("João")
+                .lastName("Freixo")
+                .email("joãoodoe@gmail.com")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
+                .build();
 
         LIST_USERS.add(user1);
         LIST_USERS.add(user2);
@@ -35,6 +53,8 @@ public class UserDataUtil {
                 .email("geovane@gmail.com")
                 .firstName("Geovane")
                 .lastName("Valente")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
                 .build();
     }
 
@@ -43,6 +63,8 @@ public class UserDataUtil {
                 .email("geovane@gmail.com")
                 .firstName("Geovane")
                 .lastName("Valente")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
                 .build();
     }
 
@@ -62,6 +84,8 @@ public class UserDataUtil {
         return User.builder()
                 .id(getFirst().getId())
                 .email("geovane321@gmail.com")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
                 .build();
     }
 
@@ -69,6 +93,8 @@ public class UserDataUtil {
         return User.builder()
                 .id(getFirst().getId())
                 .firstName("Gabriel")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
                 .build();
     }
 
@@ -76,6 +102,8 @@ public class UserDataUtil {
         return User.builder()
                 .id(getFirst().getId())
                 .lastName("Valente")
+                .roles("USER")
+                .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
                 .build();
     }
 

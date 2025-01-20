@@ -160,25 +160,23 @@ class UserServiceTest {
     }
 
 
-    // 10, 11, 12 Devem ser trocados para um parameterized test
-
     @Test
     @Order(10)
     @DisplayName("Should replace user with new FirstName")
     void replace_shouldReplaceUserWithNewFirstName_whenSuccessfull() {
         var expectedUserToReplace = userDataUtil.getUserToReplace();
-
         var newUser = userDataUtil.getNewUserWithNewFirstName();
+        expectedUserToReplace.setFirstName(newUser.getFirstName());
 
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
 
-        BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
+        BDDMockito.when(userRepository.save(newUser)).thenReturn(BDDMockito.any());
 
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-        Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
+        Mockito.verify(userRepository, Mockito.times(1)).save(newUser);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -188,8 +186,8 @@ class UserServiceTest {
     @DisplayName("Should replace user with new Email")
     void replace_shouldReplaceUserWithNewEmail_whenSuccessfull() {
         var expectedUserToReplace = userDataUtil.getUserToReplace();
-
         var newUser = userDataUtil.getNewUserWithNewEmail();
+        expectedUserToReplace.setEmail(newUser.getEmail());
 
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
@@ -197,11 +195,12 @@ class UserServiceTest {
         BDDMockito.when(userRepository.findUserByEmailAndIdNot(newUser.getEmail(),
                 newUser.getId())).thenReturn(Optional.empty());
 
-        BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
+        BDDMockito.when(userRepository.save(newUser)).thenReturn(BDDMockito.any());
+
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-        Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
+        Mockito.verify(userRepository, Mockito.times(1)).save(newUser);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -225,7 +224,7 @@ class UserServiceTest {
                 .hasMessage("400 BAD_REQUEST \"Email %s already exists\""
                         .formatted(expectedUserToReplace.getEmail()));
 
-        Mockito.verify(userRepository, Mockito.times(0)).save(expectedUserToReplace);
+        Mockito.verify(userRepository, Mockito.times(0)).save(newUser);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -236,18 +235,18 @@ class UserServiceTest {
     @DisplayName("Should replace user with new LastName")
     void replace_shouldReplaceUserWithNewLastName_whenSuccessfull() {
         var expectedUserToReplace = userDataUtil.getUserToReplace();
-
         var newUser = userDataUtil.getNewUserWithNewLastName();
+        expectedUserToReplace.setLastName(newUser.getLastName());
 
         BDDMockito.when(userRepository.findById(expectedUserToReplace.getId()))
                 .thenReturn(Optional.of(expectedUserToReplace));
 
-        BDDMockito.when(userRepository.save(expectedUserToReplace)).thenReturn(expectedUserToReplace);
+        BDDMockito.when(userRepository.save(newUser)).thenReturn(BDDMockito.any());
 
         Assertions.assertThatNoException()
                 .isThrownBy(() -> userService.replace(newUser));
 
-        Mockito.verify(userRepository, Mockito.times(1)).save(expectedUserToReplace);
+        Mockito.verify(userRepository, Mockito.times(1)).save(newUser);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
 
     }
@@ -270,7 +269,7 @@ class UserServiceTest {
                 .hasMessage("404 NOT_FOUND \"User not found\"");
 
 
-        Mockito.verify(userRepository, Mockito.times(0)).save(expectedUserToReplace);
+        Mockito.verify(userRepository, Mockito.times(0)).save(newUser);
         Mockito.verify(userRepository, Mockito.times(1)).findById(expectedUserToReplace.getId());
     }
 

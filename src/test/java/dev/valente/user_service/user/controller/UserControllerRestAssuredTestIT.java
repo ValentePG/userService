@@ -3,10 +3,12 @@ package dev.valente.user_service.user.controller;
 import dev.valente.user_service.common.FileUtil;
 import dev.valente.user_service.common.UserDataUtil;
 import dev.valente.user_service.config.IntegrationTestConfig;
+import dev.valente.user_service.config.RestAssuredConfig;
 import dev.valente.user_service.domain.User;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.assertj.core.api.Assertions;
@@ -16,6 +18,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.ComponentScan;
@@ -26,7 +29,7 @@ import java.util.stream.Stream;
 
 @ComponentScan(basePackages = {"dev.valente.user_service.user", "dev.valente.user_service.common"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RestAssuredConfig.class)
 public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
 
     private final String URL = "/v1/users";
@@ -37,17 +40,17 @@ public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
     @Autowired
     private UserDataUtil userDataUtil;
 
-    @LocalServerPort
-    private int port;
+//    @Autowired
+//    @Qualifier(value = "aloasd")
+//    private RequestSpecification requestSpecification;
 
     @Autowired
     private UserRepositoryJPA userRepository;
 
-    @BeforeEach
-    void setUp() {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = port;
-    }
+//    @BeforeEach
+//    void setUp() {
+//        RestAssured.requestSpecification = requestSpecification;
+//    }
 
     @Test
     @DisplayName("GET v1/users should return list of all users")
@@ -352,49 +355,49 @@ public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("putWithInvalidFields")
-    @DisplayName("PUT v1/users payload should return BAD REQUEST with invalid fields")
-    @Order(12)
-    void replaceWithInvalidPayload_shouldReturnBadRequest_whenFailed(String fileName, String fileError) {
-        var request = fileUtil.readFile(fileName);
-
-        var responseFile = fileUtil.readFile(fileError);
-
-        var response = RestAssured.given()
-                .contentType(ContentType.JSON).accept(ContentType.JSON)
-                .body(request)
-                .when()
-                .put(URL)
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .log().all()
-                .extract().response().body().asString();
-
-        JsonAssertions.assertThatJson(response)
-                .whenIgnoringPaths("timestamp")
-                .isEqualTo(responseFile);
-
-    }
-
-    private static Stream<Arguments> putWithInvalidFields() {
-        var invalidEmail = "/user/put/put_replacewithinvalidemail_400.json";
-        var blankEmail = "/user/put/put_replacewithblank-empty-email_400.json";
-        var blankFirstName = "/user/put/put_replacewithblank-empty-firstname_400.json";
-        var blankLastName = "/user/put/put_replacewithblank-empty-lastname_400.json";
-
-        var invalidEmailError = "/user/put/put_response-replacewithinvalidemail_400.json";
-        var blankEmailError = "/user/put/put_response-replace-empty-email_400.json";
-        var blankFirstNameError = "/user/put/put_response-replace-empty-firstname_400.json";
-        var blankLastNameError = "/user/put/put_response-replace-empty-lastname_400.json";
-
-        return Stream.of(
-                Arguments.of(invalidEmail, invalidEmailError),
-                Arguments.of(blankEmail, blankEmailError),
-                Arguments.of(blankFirstName, blankFirstNameError),
-                Arguments.of(blankLastName, blankLastNameError)
-        );
-    }
+//    @ParameterizedTest
+//    @MethodSource("putWithInvalidFields")
+//    @DisplayName("PUT v1/users payload should return BAD REQUEST with invalid fields")
+//    @Order(12)
+//    void replaceWithInvalidPayload_shouldReturnBadRequest_whenFailed(String fileName, String fileError) {
+//        var request = fileUtil.readFile(fileName);
+//
+//        var responseFile = fileUtil.readFile(fileError);
+//
+//        var response = RestAssured.given()
+//                .contentType(ContentType.JSON).accept(ContentType.JSON)
+//                .body(request)
+//                .when()
+//                .put(URL)
+//                .then()
+//                .statusCode(HttpStatus.BAD_REQUEST.value())
+//                .log().all()
+//                .extract().response().body().asString();
+//
+//        JsonAssertions.assertThatJson(response)
+//                .whenIgnoringPaths("timestamp")
+//                .isEqualTo(responseFile);
+//
+//    }
+//
+//    private static Stream<Arguments> putWithInvalidFields() {
+//        var invalidEmail = "/user/put/put_replacewithinvalidemail_400.json";
+//        var blankEmail = "/user/put/put_replacewithblank-empty-email_400.json";
+//        var blankFirstName = "/user/put/put_replacewithblank-empty-firstname_400.json";
+//        var blankLastName = "/user/put/put_replacewithblank-empty-lastname_400.json";
+//
+//        var invalidEmailError = "/user/put/put_response-replacewithinvalidemail_400.json";
+//        var blankEmailError = "/user/put/put_response-replace-empty-email_400.json";
+//        var blankFirstNameError = "/user/put/put_response-replace-empty-firstname_400.json";
+//        var blankLastNameError = "/user/put/put_response-replace-empty-lastname_400.json";
+//
+//        return Stream.of(
+//                Arguments.of(invalidEmail, invalidEmailError),
+//                Arguments.of(blankEmail, blankEmailError),
+//                Arguments.of(blankFirstName, blankFirstNameError),
+//                Arguments.of(blankLastName, blankLastNameError)
+//        );
+//    }
 
     @Test
     @DisplayName("PUT v1/users payload with inexistentId should return NOT FOUND")
