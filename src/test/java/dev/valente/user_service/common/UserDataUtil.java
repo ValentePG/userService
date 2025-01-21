@@ -31,9 +31,9 @@ public class UserDataUtil {
 
         var user3 = User.builder()
                 .id(3L)
-                .firstName("João")
+                .firstName("Geovane")
                 .lastName("Freixo")
-                .email("joãoodoe@gmail.com")
+                .email("geovane@gmail.com")
                 .roles("USER")
                 .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")
                 .build();
@@ -50,8 +50,8 @@ public class UserDataUtil {
     public User getUserToSave() {
         return User.builder()
                 .id(1L)
-                .email("geovane@gmail.com")
-                .firstName("Geovane")
+                .email("ganso@gmail.com")
+                .firstName("ganso")
                 .lastName("Valente")
                 .roles("USER")
                 .password("{bcrypt}$2a$10$RTw9.dfy8DZ813JcadlXlOw9H6UWF7Y31HRU.YVGQXxqqe6ihqDC.")

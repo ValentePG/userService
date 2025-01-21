@@ -45,7 +45,7 @@ class UserRepositoryJPATestIT extends IntegrationTestConfig {
     @Sql(value = "/sql/init_sql_user.sql")
     @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByFirstName_shouldReturnUser_WhenSuccessfull() {
-        var user = userDataUtil.getUserToSave();
+        var user = userDataUtil.getThirdUser();
 
         var userToFind = userRepository.findUserByFirstName(user.getFirstName());
 
@@ -59,7 +59,7 @@ class UserRepositoryJPATestIT extends IntegrationTestConfig {
     @Sql(value = "/sql/init_sql_user.sql")
     @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByEmail_shouldReturnUser_WhenSuccessfull() {
-        var user = userDataUtil.getUserToSave();
+        var user = userDataUtil.getThirdUser();
 
         var userToFind = userRepository.findUserByEmail(user.getEmail());
 
@@ -73,7 +73,7 @@ class UserRepositoryJPATestIT extends IntegrationTestConfig {
     @Sql(value = "/sql/init_sql_user.sql")
     @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findUserByEmailAndIdNot_shouldReturnUser_WhenSuccessfull() {
-        var user = userDataUtil.getUserToSave();
+        var user = userDataUtil.getThirdUser();
 
         var userToFind = userRepository.findUserByEmailAndIdNot(user.getEmail(), 2L);
 
@@ -87,7 +87,7 @@ class UserRepositoryJPATestIT extends IntegrationTestConfig {
     @Sql(value = "/sql/init_sql_user.sql")
     @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void findById_shouldReturnUser_WhenSuccessfull() {
-        var user = userDataUtil.getUserToSave();
+        var user = userDataUtil.getThirdUser();
 
         var usefind = userRepository.findUserByEmail(user.getEmail());
 

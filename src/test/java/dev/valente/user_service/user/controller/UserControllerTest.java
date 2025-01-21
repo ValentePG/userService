@@ -66,6 +66,8 @@ class UserControllerTest {
     @WithMockUser(authorities = "ADMIN")
     void findAll_shouldReturnListOfUsers_whenSuccessfull() throws Exception {
 
+        mockList();
+
         var pathResponse = "/user/get/get_findallusers_200.json";
 
         var expectedList = fileUtil.readFile(pathResponse);
