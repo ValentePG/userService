@@ -4,7 +4,6 @@ import dev.valente.user_service.common.FileUtil;
 import dev.valente.user_service.common.UserDataUtil;
 import dev.valente.user_service.config.IntegrationTestConfig;
 import dev.valente.user_service.config.RestAssuredConfig;
-import dev.valente.user_service.domain.User;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.SqlMergeMode;
 
 import java.util.stream.Stream;
 
@@ -259,8 +257,6 @@ public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
     @Test
     @DisplayName("POST v1/users should save and return a user")
     @Order(8)
-    @Sql(value = "/sql/init_sql_threeusers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void save_shouldSaveAndReturnUser_whenSuccessfull() {
         var pathResponse = "/user/post/post_createduser_201.json";
         var pathRequest = "/user/post/post_createuser_200.json";
@@ -288,8 +284,6 @@ public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
     @MethodSource("postParameterizedTest")
     @DisplayName("POST v1/users should return BAD REQUEST")
     @Order(9)
-    @Sql(value = "/sql/init_sql_threeusers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void save_shouldReturnBadRequest_whenFailed(String fileName, String fileError) {
 
         var request = fileUtil.readFile(fileName);
@@ -451,7 +445,7 @@ public class UserControllerRestAssuredTestIT extends IntegrationTestConfig {
     @Test
     @DisplayName("DELETE v1/users/{inexistentId} should return NOT FOUND")
     @Order(13)
-    @Sql(value = "/sql/init_sql_threeusers.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = "/sql/init_one_login_admin_user.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void deleteById_shouldReturnNotFound_whenFailed() {
         RestAssured.requestSpecification = requestSpecificationAdminUser;

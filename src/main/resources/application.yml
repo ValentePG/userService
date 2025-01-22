@@ -26,6 +26,14 @@ server:
     threads:
       max: 20
 
+management:
+  server:
+    port: 8090
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 logging:
   level:
 #    dev.valente.user_service: debug

@@ -20,6 +20,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -40,10 +42,10 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    @MockBean
+    @MockitoBean
     private UserRepositoryJPA userRepository;
 
-    @SpyBean
+    @MockitoSpyBean
     private UserMapperService userMapperService;
 
     @Autowired

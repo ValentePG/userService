@@ -13,9 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(UserProfileController.class)
@@ -29,13 +29,13 @@ class UserProfileControllerTest {
     @InjectMocks
     private UserProfileController userProfileController;
 
-    @MockBean
+    @MockitoBean
     private UserProfileService userProfileService;
 
-    @MockBean
+    @MockitoBean
     private UserProfileRepository userProfileRepository;
 
-    @SpyBean
+    @MockitoSpyBean
     private UserProfileMapper userProfileMapper;
 
     @Autowired
