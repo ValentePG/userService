@@ -15,3 +15,7 @@ server:
     include-message: always
     include-stacktrace: on_param
 #    include-binding-errors: always
+
+brasil-api:
+  base-url: https://localhost:8085/api
+  cep-uri: /cep/v1/{cep}}
