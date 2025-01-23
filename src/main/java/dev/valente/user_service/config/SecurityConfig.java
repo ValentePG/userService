@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(WHITE_LIST).permitAll()
                         .requestMatchers(HttpMethod.POST, "/v1/users").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "v1/users/*").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "v1/brasil-api/cep/*").permitAll()
                         .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
