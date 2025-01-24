@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "url": "/api/cep/v1/40400000%7D"
+    "url": "/api/cep/v1/400999%7D"
   },
 
   "response": {
