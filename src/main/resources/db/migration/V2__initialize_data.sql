@@ -1,0 +1,13 @@
+INSERT INTO user_service.tbl_profile (id, description, name) VALUES (1, 'Salve mano', 'r User');
+INSERT INTO user_service.tbl_profile (id, description, name) VALUES (2, 'Salve mano', 'Admin User');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (1, 'oi3@gmail.com', 'o31', 'o3i', '{bcrypt}$2a$10$ezgHHapTMoNWEAz7EPAULerBWUO2l3p4Yve56ptlpAPImR2cx1Vb2', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (2, 'issovaifuncionar@gmail.com', 'gab342342riel', 'Go3424mes', '{bcrypt}$2a$10$gIOJqbJHQ3lYJrPr4a7RZu.JjcfftnQFr/1ozp31So/0H934QA3Xi', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (3, 'jonwygo2226235e43s@gmail.com', 'devdojotest2e', 'Junior2', '', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (4, 'string', 'string', 'string', '', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (5, 'gabriel@mail.com', 'Gabriel', 'Gomes', '', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (6, 'jonwygo222623532e43s@gmail.com', 'devdojotest2e', 'Junior2', '', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (8, 'jonwygo22263221235asd32e43s@gmail.com', 'devdojotest2e', 'Junior2', '', 'USER');
+INSERT INTO user_service.tbl_usuario (id, email, first_name, last_name, password, roles) VALUES (9, 'gabrielgomes@gmail.com', 'gabriel', 'gomes', '{bcrypt}$2a$10$6Uuu5d.D67R0ErkcL7HAG.uVzAjfbBVud3oNcSNK.GOFcUw8vniye', 'ADMIN');
+INSERT INTO user_service.user_profile (id, profile_id, user_id) VALUES (1, 1, 1);
+INSERT INTO user_service.user_profile (id, profile_id, user_id) VALUES (2, 2, 3);
+INSERT INTO user_service.user_profile (id, profile_id, user_id) VALUES (3, 1, 2);

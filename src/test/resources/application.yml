@@ -1,12 +1,15 @@
 spring:
   sql:
     init:
-      mode: always
+      mode: never
   jpa:
-    defer-datasource-initialization: true
+#    defer-datasource-initialization: true
     show-sql: true
     hibernate:
       ddl-auto: none
+  flyway:
+    enabled: true
+    locations: classpath:db/migration-test
 #server:
 #  error:
 server:
