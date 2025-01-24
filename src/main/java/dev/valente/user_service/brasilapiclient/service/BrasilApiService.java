@@ -29,7 +29,7 @@ public class BrasilApiService {
                 .onStatus(HttpStatusCode::is4xxClientError, (request, response) -> {
                     var body = new String(response.getBody().readAllBytes());
                     var cepGetErrorResponse = objectMapper.readValue(body, CepGetErrorResponse.class);
-                    throw new NotFoundException(body);
+                    throw new NotFoundException(cepGetErrorResponse.toString());
                 })
                 .body(CepGetResponse.class);
     }

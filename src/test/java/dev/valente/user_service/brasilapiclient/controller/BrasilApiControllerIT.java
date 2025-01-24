@@ -74,11 +74,12 @@ public class BrasilApiControllerIT extends IntegrationTestConfig {
         var cep = "400999";
         var expectedResponse = fileUtil.readFile("brasil-api/cep/expected-get-cep-response-404.json");
         var expectedMessages = List.of(
+                "CepGetErrorResponse",
+                "name",
                 "message",
                 "CEP deve conter exatamente 8 caracteres.",
                 "type",
                 "validation_error",
-                "name",
                 "CepPromiseError",
                 "errors",
                 "CEP informado possui mais do que 8 caracteres.",
