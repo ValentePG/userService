@@ -21,4 +21,5 @@ public class FileUtil {
 
         return Files.readString(file.toPath());
     }
+
 }

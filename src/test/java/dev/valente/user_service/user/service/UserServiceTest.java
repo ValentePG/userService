@@ -1,5 +1,9 @@
 package dev.valente.user_service.user.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.valente.user_service.brasilapiclient.response.CepGetErrorResponse;
+import dev.valente.user_service.brasilapiclient.response.CepInnerErrorResponse;
 import dev.valente.user_service.common.UserDataUtil;
 import dev.valente.user_service.exception.EmailAlreadyExist;
 import dev.valente.user_service.user.repository.UserRepositoryJPA;
@@ -13,6 +17,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,7 +35,7 @@ class UserServiceTest {
     @Test
     @Order(1)
     @DisplayName("Should return list of all users")
-    void findAll_shouldReturnAllUsers_whenSuccessfull() {
+    void findAll_shouldReturnAllUsers_whenSuccessfull() throws JsonProcessingException {
 
         mockList();
 

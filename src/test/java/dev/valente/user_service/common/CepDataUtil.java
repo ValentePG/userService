@@ -24,15 +24,15 @@ public class CepDataUtil {
     public CepGetErrorResponse newCepGetErrorResponse() {
 
         var cepInnerErrorResponse = CepInnerErrorResponse.builder()
-                .name("ServiceError")
-                .message("CEP INVÁLIDO")
-                .service("correios")
+                .name("null")
+                .message("CEP informado possui mais do que 8 caracteres.")
+                .service("cep_validation")
                 .build();
 
         return CepGetErrorResponse.builder()
                 .name("CepPromiseError")
-                .message("Todos os serviços de CEP retornaram erro.")
-                .type("service_error")
+                .message("CEP deve conter exatamente 8 caracteres.")
+                .type("validation_error")
                 .errors(List.of(cepInnerErrorResponse))
                 .build();
     }

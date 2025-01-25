@@ -81,11 +81,11 @@ class BrasilApiServiceTest {
     void findCep_ReturnsCepInnerErrorResponse_WhenUnsucessfull() throws JsonProcessingException {
         server = MockRestServiceServer.bindTo(brasilApiClientBuilder).build();
 
-        var cep = "40400000";
+        var cep = "4040000";
         var cepErrorResponse = cepDataUtil.newCepGetErrorResponse();
         var jsonResponse = objectMapper.writeValueAsString(cepErrorResponse);
         var expectedErrorMessage = """
-                404 NOT_FOUND "CepGetErrorResponse[name=CepPromiseError, message=Todos os serviços de CEP retornaram erro., type=service_error, errors=[CepInnerErrorResponse[name=ServiceError, message=CEP INVÁLIDO, service=correios]]]"
+                404 NOT_FOUND "CepGetErrorResponse[name=CepPromiseError, message=CEP deve conter exatamente 8 caracteres., type=validation_error, errors=[CepInnerErrorResponse[name=null, message=CEP informado possui mais do que 8 caracteres., service=cep_validation]]]"
                 """.trim();
         var requestTo = MockRestRequestMatchers
                 .requestToUriTemplate(properties.baseUrl()

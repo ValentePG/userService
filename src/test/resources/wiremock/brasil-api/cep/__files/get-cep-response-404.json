@@ -1,1 +1,1 @@
-{"status":404,"message":"{\"message\":\"CEP deve conter exatamente 8 caracteres.\",\"type\":\"validation_error\",\"name\":\"CepPromiseError\",\"errors\":[{\"message\":\"CEP informado possui mais do que 8 caracteres.\",\"service\":\"cep_validation\"}]}"}
+{"status":404,"message":"CepGetErrorResponse[name=CepPromiseError, message=CEP deve conter exatamente 8 caracteres., type=validation_error, errors=[CepInnerErrorResponse[name=null, message=CEP informado possui mais do que 8 caracteres., service=cep_validation]]]"}

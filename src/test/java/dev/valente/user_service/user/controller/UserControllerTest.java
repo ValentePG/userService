@@ -1,5 +1,8 @@
 package dev.valente.user_service.user.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.valente.user_service.brasilapiclient.response.CepGetErrorResponse;
+import dev.valente.user_service.common.CepDataUtil;
 import dev.valente.user_service.common.FileUtil;
 import dev.valente.user_service.common.UserDataUtil;
 import dev.valente.user_service.user.dto.httprequest.post.UserPostRequest;
@@ -15,8 +18,6 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -27,6 +28,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -67,6 +70,7 @@ class UserControllerTest {
     @Order(1)
     @WithMockUser(authorities = "ADMIN")
     void findAll_shouldReturnListOfUsers_whenSuccessfull() throws Exception {
+
 
         mockList();
 

@@ -1,7 +1,7 @@
 package dev.valente.user_service.brasilapiclient.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.github.tomakehurst.wiremock.WireMockServer;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.valente.user_service.common.FileUtil;
 import dev.valente.user_service.config.IntegrationTestConfig;
 import dev.valente.user_service.config.RestAssuredConfig;
@@ -14,19 +14,18 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
-import org.wiremock.spring.ConfigureWireMock;
-import org.wiremock.spring.EnableWireMock;
-import org.wiremock.spring.InjectWireMock;
 
 import java.util.List;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = RestAssuredConfig.class)
-@EnableWireMock({
-        @ConfigureWireMock(port = 0, filesUnderClasspath = "wiremock/brasil-api/cep")})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = RestAssuredConfig.class)
+//@EnableWireMock({
+//        @ConfigureWireMock(port = 0, filesUnderClasspath = "wiremock/brasil-api/cep")})
+@AutoConfigureWireMock(port = 0, files = "classpath:/wiremock/brasil-api/cep",
+        stubs = "classpath:/wiremock/brasil-api/cep/mappings")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Sql(value = "/sql/init_one_login_regular_user.sql")
 @Sql(value = "/sql/drop_users.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -37,8 +36,8 @@ public class BrasilApiControllerIT extends IntegrationTestConfig {
     @Autowired
     private FileUtil fileUtil;
 
-//    @InjectWireMock
-//    private WireMockServer wireMockServer;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Autowired
     @Qualifier(value = "requestSpecificationRegularUser")
@@ -69,10 +68,11 @@ public class BrasilApiControllerIT extends IntegrationTestConfig {
     @Order(2)
     @Test
     @DisplayName("findCep returns CepInnerErrorResponse when Failed")
-    void findCep_ReturnsCepInnerErrorResponse_WhenUnsucessfull() {
+    void findCep_ReturnsCepInnerErrorResponse_WhenUnsucessfull() throws JsonProcessingException {
 
         var cep = "400999";
         var expectedResponse = fileUtil.readFile("brasil-api/cep/expected-get-cep-response-404.json");
+
         var expectedMessages = List.of(
                 "CepGetErrorResponse",
                 "name",
@@ -80,6 +80,7 @@ public class BrasilApiControllerIT extends IntegrationTestConfig {
                 "CEP deve conter exatamente 8 caracteres.",
                 "type",
                 "validation_error",
+                "CepInnerErrorResponse",
                 "CepPromiseError",
                 "errors",
                 "CEP informado possui mais do que 8 caracteres.",
